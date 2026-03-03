@@ -7,6 +7,9 @@
 class ModbusModel : public QAbstractListModel {
     Q_OBJECT
 public:
+    explicit ModbusModel(QObject *parent = nullptr)
+        : QAbstractListModel(parent) {}
+
     int rowCount(const QModelIndex & = QModelIndex()) const override { return m_vars.size(); }
     QVariant data(const QModelIndex &index, int role) const override {
         if (!index.isValid() || role != Qt::DisplayRole) return {};
@@ -26,10 +29,24 @@ public:
 
     void addVar(QString n, uint16_t a, VarType t) { m_vars << ModbusVar{n, a, t, 0}; }
 
+    // Новый API доступа к переменным
+    int variableCount() const { return m_vars.size(); }
+
+    const ModbusVar &variableAt(int index) const { return m_vars[index]; }
+
+    const ModbusVar *findVariable(const QString &name) const {
+        for (int i = 0; i < m_vars.size(); ++i) {
+            if (m_vars[i].name == name) {
+                return &m_vars[i];
+            }
+        }
+        return nullptr;
+    }
+
 signals:
     void variableUpdated(const QString &name, QVariant value);
 
-public:
+private:
     QVector<ModbusVar> m_vars;
 };
 #endif
