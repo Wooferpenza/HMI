@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "modbusmanager.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -21,7 +22,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
-
+    ModbusModel *model;
+    ModbusManager *manager;
+    QTimer *timer;
 };
 #endif // MAINWINDOW_H

@@ -3,7 +3,6 @@
 
 #include <QDialog>
 
-
 namespace Ui {
 class NumpadDialog;
 }
@@ -27,6 +26,7 @@ private slots:
     void handleRightButton();
     void handleMinusButton();
     void handleEnterButton();
+
 private:
     Ui::NumpadDialog *ui;
     float minimum;

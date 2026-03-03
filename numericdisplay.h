@@ -10,6 +10,7 @@ class NumericDisplay : public QLineEdit
 private:
     float mValue, mMinimumValue, mMaximumValue;
     void cheсkRange();
+
 public:
     NumericDisplay(QWidget *parent = nullptr);
     void setValue(float val);
@@ -20,12 +21,13 @@ public:
     float maximumValue();
 signals:
     void clicked();
-protected:
-    void mousePressEvent(QMouseEvent *event) override {
-        QLineEdit::mouseReleaseEvent(event); // Вызываем стандартную обработку
-        emit clicked(); // Испускаем сигнал
-    }
 
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        QLineEdit::mouseReleaseEvent(event); // Вызываем стандартную обработку
+        emit clicked();                      // Испускаем сигнал
+    }
 };
 
 #endif // NUMERICDISPLAY_H

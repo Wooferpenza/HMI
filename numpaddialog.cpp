@@ -1,7 +1,7 @@
 #include "numpaddialog.h"
-#include "ui_numpaddialog.h"
-#include <QString>
 #include <QMessageBox>
+#include <QString>
+#include "ui_numpaddialog.h"
 
 NumpadDialog::NumpadDialog(QWidget *parent)
     : QDialog(parent)
@@ -26,8 +26,6 @@ NumpadDialog::NumpadDialog(QWidget *parent)
     connect(ui->pushButtonRight, &QPushButton::clicked, this, &NumpadDialog::handleRightButton);
     connect(ui->pushButtonPlusMinus, &QPushButton::clicked, this, &NumpadDialog::handleMinusButton);
     connect(ui->pushButtonENT, &QPushButton::clicked, this, &NumpadDialog::handleEnterButton);
-
-
 }
 
 NumpadDialog::~NumpadDialog()
@@ -37,14 +35,14 @@ NumpadDialog::~NumpadDialog()
 
 void NumpadDialog::setRange(float min, float max)
 {
-    minimum=min;
-    maximum=max;
-    ui->label->setText(QString::number(minimum)+" - "+QString::number(maximum));
+    minimum = min;
+    maximum = max;
+    ui->label->setText(QString::number(minimum) + " - " + QString::number(maximum));
 }
 
 void NumpadDialog::handleNumberButton()
 {
-    QPushButton *button = qobject_cast<QPushButton*>(sender());
+    QPushButton *button = qobject_cast<QPushButton *>(sender());
     if (button) {
         qDebug() << "Нажата кнопка:" << button->text();
         ui->lineEdit->insert(button->text());
@@ -59,30 +57,26 @@ void NumpadDialog::handleClearButton()
 void NumpadDialog::handleDeleteButton()
 {
     ui->lineEdit->backspace();
-
 }
 
 void NumpadDialog::handleLeftButton()
 {
-    ui->lineEdit->cursorBackward(false,1);
+    ui->lineEdit->cursorBackward(false, 1);
     ui->lineEdit->setFocus();
 }
 
 void NumpadDialog::handleRightButton()
 {
-    ui->lineEdit->cursorForward(false,1);
+    ui->lineEdit->cursorForward(false, 1);
     ui->lineEdit->setFocus();
 }
 
 void NumpadDialog::handleMinusButton()
 {
     QString currentText(ui->lineEdit->text());
-    if  (currentText.at(0)=="-")
-    {
+    if (currentText.at(0) == "-") {
         currentText.removeFirst();
-    }
-    else
-    {
+    } else {
         currentText.push_front("-");
     }
     ui->lineEdit->setText(currentText);
@@ -90,17 +84,13 @@ void NumpadDialog::handleMinusButton()
 
 void NumpadDialog::handleEnterButton()
 {
-    QString resultStr=ui->lineEdit->text();
-    float result=resultStr.toFloat();
-    if ((result<minimum) or (result>maximum))
-    {
-        QMessageBox::warning(this,"Error","Exceed the limit");
-    }
-    else
-    {
+    QString resultStr = ui->lineEdit->text();
+    float result = resultStr.toFloat();
+    if ((result < minimum) or (result > maximum)) {
+        QMessageBox::warning(this, "Error", "Exceed the limit");
+    } else {
         emit enterFloat(result);
         emit enterInt(int(result));
         close();
     }
-    }
-
+}
