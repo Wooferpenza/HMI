@@ -22,6 +22,7 @@ public:
                 m_vars[i].value = val;
                 emit dataChanged(index(i), index(i));
                 emit variableUpdated(name, val);
+                emit m_vars[i].update();
                 break;
             }
         }

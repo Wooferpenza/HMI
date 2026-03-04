@@ -13,6 +13,8 @@ struct ModbusVar {
     VarType type;
     QVariant value;
     int regCount() const { return (type == VarType::DWord || type == VarType::Float) ? 2 : 1; }
+signals:
+   void update();
 };
 
 struct ModbusRequest {

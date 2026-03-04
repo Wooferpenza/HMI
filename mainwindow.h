@@ -19,11 +19,13 @@ public:
 
 private slots:
     void showNumPad();
-
+    void displayUpdate(QString name,QVariant val);
 private:
     Ui::MainWindow *ui;
     ModbusModel *model;
     ModbusManager *manager;
     QTimer *timer;
+    void connectDisplay();
 };
+
 #endif // MAINWINDOW_H

@@ -13,22 +13,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QMap<QString, std::function<void(QVariant)>> bindings;
-    bindings["Temp"] = [this](QVariant v) { ui->lineEdit->setValue(v.toDouble()); };
+
 
     model = new ModbusModel(this);
     model->addVar("Temp", 100, VarType::Float);
-    model->addVar("Temp1", 102, VarType::Float);
-
-
+    model->addVar("Temp1", 104, VarType::Float);
     // Привязываем виджеты к именам Modbus‑переменных
     ui->lineEdit->setProperty("modbusVarName", "Temp");
+    ui->lineEdit2->setProperty("modbusVarName", "Temp1");
+    connect(model, &ModbusModel::variableUpdated, this, &MainWindow::displayUpdate);
+
     manager = new ModbusManager(model, this);
     manager->connectTo("192.168.1.5", 502);
-    connect(model, &ModbusModel::variableUpdated, [bindings](const QString &name, QVariant val) {
-        if (bindings.contains(name)) bindings[name](val);
-    });
-
 
     connect(ui->lineEdit, &NumericDisplay::clicked, this, &MainWindow::showNumPad);
     timer = new QTimer(this);
@@ -61,4 +57,23 @@ void MainWindow::showNumPad()
         npd.show();
         npd.exec();
     }
+}
+
+void MainWindow::displayUpdate(QString name, QVariant val)
+{
+    QList<NumericDisplay*> displ = this->findChildren<NumericDisplay*>();
+    for (auto i=displ.begin();i!=displ.end();i++)
+    {
+        QString VarName=(*i)->property("modbusVarName").toString();
+
+            if (VarName==name)
+            {
+                (*i)->setValue(val.toDouble());
+            }
+
+    }
+}
+void MainWindow::connectDisplay()
+{
+
 }
