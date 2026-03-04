@@ -75,5 +75,14 @@ void MainWindow::displayUpdate(QString name, QVariant val)
 }
 void MainWindow::connectDisplay()
 {
+    QList<NumericDisplay*> displ = this->findChildren<NumericDisplay*>();
+    for (auto i=displ.begin();i!=displ.end();i++)
+    {
+        QString VarName=(*i)->property("modbusVarName").toString();
+
+        connect(model, &ModbusModel::variableUpdated, this, &MainWindow::displayUpdate);
+
+    }
+
 
 }

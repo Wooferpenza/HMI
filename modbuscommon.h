@@ -7,7 +7,13 @@
 
 enum class VarType { Bool, Word, DWord, Float };
 
-struct ModbusVar {
+class ModbusVar : public QObject {
+    Q_OBJECT
+public:
+    ModbusVar()
+    {
+
+    }
     QString name;
     uint16_t address;
     VarType type;
