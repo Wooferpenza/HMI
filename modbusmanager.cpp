@@ -1,5 +1,5 @@
 #include "modbusmanager.h"
-#include "modbusmodel.h" // Подключаем полную модель только здесь
+#include "modbusmodel.h"
 #include <QModbusReply>
 #include <QModbusDataUnit>
 ModbusManager::ModbusManager(ModbusModel *model, QObject *parent) : QObject(parent), m_model(model) {
@@ -10,6 +10,9 @@ void ModbusManager::connectTo(const QString &ip, int port) {
     m_client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, ip);
     m_client->setConnectionParameter(QModbusDevice::NetworkPortParameter, port);
     m_client->connectDevice();
+    connect(m_client, &QModbusClient::stateChanged, [](QModbusDevice::State state){
+        if (state == QModbusDevice::ConnectedState) { qDebug()<< "Готов к работе "; }
+    });
 }
 
 void ModbusManager::triggerPoll() {
@@ -59,7 +62,8 @@ void ModbusManager::writeVariable(const QString &name, QVariant value) {
         float f = value.toFloat();
         uint32_t r;
         memcpy(&r, &f, 4);
-        data << (uint16_t)(r >> 16) << (uint16_t)(r & 0xFFFF);
+        //data << (uint16_t)(r >> 16) << (uint16_t)(r & 0xFFFF);
+        data <<  (uint16_t)(r & 0xFFFF) << (uint16_t)(r >> 16);
     } else {
         data << (uint16_t)value.toUInt();
     }
@@ -87,7 +91,7 @@ void ModbusManager::processQueue() {
 
 void ModbusManager::onReplyFinished() {
     auto *reply = qobject_cast<QModbusReply*>(sender());
-    if (reply && reply->error() == QModbusDevice::NoError && reply->type() == QModbusReply::Raw)
+    if (reply && reply->error() == QModbusDevice::NoError)// && reply->type() == QModbusReply::Raw)
         parseReadData(reply->result());
 
     m_busy = false;
@@ -110,7 +114,7 @@ void ModbusManager::parseReadData(const QModbusDataUnit &res) {
         if (v.type == VarType::Float) {
             if (offset + 1 >= valuesCount)
                 continue; // защитимся от выхода за границы
-            uint32_t r = (uint32_t(res.value(offset)) << 16) | res.value(offset + 1);
+            uint32_t r = (uint32_t(res.value(offset+1)) << 16) | res.value(offset);
             float f;
             memcpy(&f, &r, 4);
             val = f;

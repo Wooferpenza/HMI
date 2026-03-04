@@ -4,11 +4,8 @@
 #include <QObject>
 #include <QQueue>
 #include <QModbusTcpClient>
-
-// Сначала подключаем структуры, чтобы QQueue<ModbusRequest> понимал тип
 #include "modbuscommon.h"
 
-// Предварительное объявление класса модели, чтобы не было циклической зависимости
 class ModbusModel;
 
 class ModbusManager : public QObject {
@@ -29,7 +26,7 @@ private:
     void parseReadData(const struct QModbusDataUnit &res);
     QModbusTcpClient *m_client;
     ModbusModel *m_model;
-    QQueue<ModbusRequest> m_queue; // Теперь ошибка исчезнет
+    QQueue<ModbusRequest> m_queue;
     bool m_busy = false;
 };
 

@@ -12,16 +12,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QMap<QString, std::function<void(QVariant)>> bindings;
+    bindings["Temp"] = [this](QVariant v) { ui->lineEdit->setValue(v.toDouble()); };
+
     model = new ModbusModel(this);
     model->addVar("Temp", 100, VarType::Float);
     model->addVar("Temp1", 102, VarType::Float);
-   // model->addVar("Fan", 105, VarType::Bool);
-    QMap<QString, std::function<void(QVariant)>> bindings;
-    bindings["Temp"] = [this](QVariant v) { ui->lineEdit->setValue(v.toDouble()); };
-   // bindings["Fan"]  = [this](QVariant v) { ui->chkFan->setChecked(v.toBool()); };
+
+
     // Привязываем виджеты к именам Modbus‑переменных
     ui->lineEdit->setProperty("modbusVarName", "Temp");
-
     manager = new ModbusManager(model, this);
     manager->connectTo("192.168.1.5", 502);
     connect(model, &ModbusModel::variableUpdated, [bindings](const QString &name, QVariant val) {
