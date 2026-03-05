@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QList>
+#include <QMap>
 #include "modbuscommon.h"
 
 class ModbusModel : public QAbstractListModel {
@@ -23,21 +24,23 @@ public:
                 m_vars[i]->value = val;
                 emit dataChanged(index(i), index(i));
                 emit variableUpdated(name, val);
-                emit m_vars[i]->update();
+                emit m_vars[i]->update(val.toFloat());
                 break;
             }
         }
     }
 
-    void addVar(QString n, uint16_t a, VarType t) {
-        m_vars << new ModbusVar; }
+    void addVar(QString n, uint16_t a, VarType t)
+    {
+        m_vars << new ModbusVar(n,a,t);
+    }
 
     // Новый API доступа к переменным
     int variableCount() const { return m_vars.size(); }
 
-    const ModbusVar &variableAt(int index) const { return *m_vars[index]; }
+    const ModbusVar &variableAt(int index) const { return * m_vars[index] ; }
 
-    const ModbusVar *findVariable(const QString &name) const {
+    ModbusVar *findVariable(const QString &name) const {
         for (int i = 0; i < m_vars.size(); ++i) {
             if (m_vars[i]->name == name) {
                 return m_vars[i];
@@ -51,5 +54,6 @@ signals:
 
 private:
     QList<ModbusVar*> m_vars;
+    //QMap<QString, ModbusVar*> m_vars;
 };
 #endif

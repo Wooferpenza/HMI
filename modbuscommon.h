@@ -10,9 +10,9 @@ enum class VarType { Bool, Word, DWord, Float };
 class ModbusVar : public QObject {
     Q_OBJECT
 public:
-    ModbusVar()
+    ModbusVar(QString nam,uint16_t addr,VarType tp)
     {
-
+        name=nam; address=addr; type=tp;
     }
     QString name;
     uint16_t address;
@@ -20,7 +20,7 @@ public:
     QVariant value;
     int regCount() const { return (type == VarType::DWord || type == VarType::Float) ? 2 : 1; }
 signals:
-   void update();
+   void update(float val);
 };
 
 struct ModbusRequest {

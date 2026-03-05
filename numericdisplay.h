@@ -13,21 +13,24 @@ private:
 
 public:
     NumericDisplay(QWidget *parent = nullptr);
-    void setValue(float val);
+   // void setValue(float val);
     void setMinimum(float min);
     void setMaximum(float max);
     float value();
     float minimumValue();
     float maximumValue();
+
 signals:
     void clicked();
-
+public  slots:
+    void setValue(float val);
 protected:
     void mousePressEvent(QMouseEvent *event) override
     {
         QLineEdit::mouseReleaseEvent(event); // Вызываем стандартную обработку
         emit clicked();                      // Испускаем сигнал
     }
+
 };
 
 #endif // NUMERICDISPLAY_H

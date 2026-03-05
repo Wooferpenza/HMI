@@ -13,16 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
-
     model = new ModbusModel(this);
     model->addVar("Temp", 100, VarType::Float);
     model->addVar("Temp1", 104, VarType::Float);
     // Привязываем виджеты к именам Modbus‑переменных
     ui->lineEdit->setProperty("modbusVarName", "Temp");
-    ui->lineEdit2->setProperty("modbusVarName", "Temp1");
-    connect(model, &ModbusModel::variableUpdated, this, &MainWindow::displayUpdate);
-
+    ui->lineEdit2->setProperty("modbusVarName", "Temp");
+  //  connect(model, &ModbusModel::variableUpdated, this, &MainWindow::displayUpdate);
+    connectDisplay();
     manager = new ModbusManager(model, this);
     manager->connectTo("192.168.1.5", 502);
 
@@ -79,8 +77,9 @@ void MainWindow::connectDisplay()
     for (auto i=displ.begin();i!=displ.end();i++)
     {
         QString VarName=(*i)->property("modbusVarName").toString();
+        ModbusVar *var = model->findVariable(VarName);
 
-        connect(model, &ModbusModel::variableUpdated, this, &MainWindow::displayUpdate);
+        connect(var, &ModbusVar::update, (*i), &NumericDisplay::setValue);
 
     }
 
