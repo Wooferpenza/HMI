@@ -1,5 +1,7 @@
 #include "numpaddialog.h"
 #include <QMessageBox>
+#include <QPushButton>
+#include <QRegularExpression>
 #include <QString>
 #include "ui_numpaddialog.h"
 
@@ -8,17 +10,14 @@ NumpadDialog::NumpadDialog(QWidget *parent)
     , ui(new Ui::NumpadDialog)
 {
     ui->setupUi(this);
-    connect(ui->pushButton0, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton1, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton2, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton3, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton4, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton5, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton6, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton7, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton8, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButton9, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
-    connect(ui->pushButtonDot, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
+    const QRegularExpression numberButtonRe(QStringLiteral(R"(^pushButton([0-9]|Dot)$)"));
+    const auto buttons = findChildren<QPushButton*>();
+    for (auto *btn : buttons) {
+        if (!btn)
+            continue;
+        if (numberButtonRe.match(btn->objectName()).hasMatch())
+            connect(btn, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
+    }
 
     connect(ui->pushButtonCLR, &QPushButton::clicked, this, &NumpadDialog::handleClearButton);
     connect(ui->pushButtonDEL, &QPushButton::clicked, this, &NumpadDialog::handleDeleteButton);
@@ -37,7 +36,7 @@ void NumpadDialog::setRange(float min, float max)
 {
     minimum = min;
     maximum = max;
-    ui->label->setText(QString::number(minimum) + " - " + QString::number(maximum));
+    ui->label->setText(QString::number(minimum) + " ~ " + QString::number(maximum));
 }
 
 void NumpadDialog::handleNumberButton()

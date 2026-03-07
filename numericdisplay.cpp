@@ -17,11 +17,26 @@ NumericDisplay::NumericDisplay(QWidget *parent)
     mMaximumValue = 100;
 }
 
+void NumericDisplay::setDecimals(int decimals)
+{
+    if (decimals < 0)
+        decimals = 0;
+    if (decimals > 10)
+        decimals = 10;
+    m_decimals = decimals;
+    setText(QString::number(mValue, 'f', m_decimals));
+}
+
+int NumericDisplay::decimals() const
+{
+    return m_decimals;
+}
+
 void NumericDisplay::setValue(float val)
 {
     mValue = val;
     checkRange();
-    setText(QString::number(mValue, 'f', 2));
+    setText(QString::number(mValue, 'f', m_decimals));
 }
 
 void NumericDisplay::setValue(const QVariant &value)

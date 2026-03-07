@@ -5,6 +5,7 @@
 #include "ui_mainwindow.h"
 #include "numericdisplay.h"
 #include "numpaddialog.h"
+#include "modbussettingsdialog.h"
 #include "modbusmodel.h"
 #include "modbusmanager.h"
 
@@ -46,19 +47,28 @@ MainWindow::MainWindow(QWidget *parent)
     ui->checkBoxFlag->setProperty(kModbusVarNameProp, "Flag");
     ui->checkBoxFlag1->setProperty(kModbusVarNameProp, "Flag1");
 
-    ui->lineEditCounter->setMinimum(0);
+    ui->lineEditCounter->setMinimum(-100);
     ui->lineEditCounter->setMaximum(65535);
+    ui->lineEditCounter->setDecimals(0);
     ui->lineEditTotal->setMinimum(0);
     ui->lineEditTotal->setMaximum(2147483647.0);
 
     connectDisplay();
     manager = new ModbusManager(model, this);
     manager->setUnitId(unitId);
+    connect(manager, &ModbusManager::connectionStateChanged, this, [this](const QString &stateText) {
+        ui->statusbar->showMessage(stateText, 0);
+    });
+    connect(manager, &ModbusManager::lastError, this, [this](const QString &errorText) {
+        ui->statusbar->showMessage(tr("Ошибка Modbus: %1").arg(errorText), 5000);
+    });
     manager->connectTo(ip, port);
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, manager, &ModbusManager::triggerPoll);
     timer->start(pollMs);
+
+    connect(ui->actionModbusSettings, &QAction::triggered, this, &MainWindow::showModbusSettings);
 }
 
 MainWindow::~MainWindow()
@@ -84,6 +94,36 @@ void MainWindow::showNumPad()
     }
 
     npd.exec();
+}
+
+void MainWindow::showModbusSettings()
+{
+    QSettings s;
+    ModbusSettings current;
+    current.ip = s.value("modbus/ip", "192.168.1.5").toString();
+    current.port = s.value("modbus/port", 502).toInt();
+    current.unitId = s.value("modbus/unitId", 1).toInt();
+    current.pollIntervalMs = s.value("modbus/pollIntervalMs", 1000).toInt();
+
+    ModbusSettingsDialog dlg(current, this);
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    const ModbusSettings newSettings = dlg.settings();
+    int pollMs = newSettings.pollIntervalMs;
+    if (pollMs < 50)
+        pollMs = 50;
+
+    s.setValue("modbus/ip", newSettings.ip);
+    s.setValue("modbus/port", newSettings.port);
+    s.setValue("modbus/unitId", newSettings.unitId);
+    s.setValue("modbus/pollIntervalMs", pollMs);
+
+    manager->setUnitId(newSettings.unitId);
+    manager->connectTo(newSettings.ip, newSettings.port);
+
+    timer->stop();
+    timer->start(pollMs);
 }
 
 void MainWindow::connectDisplay()

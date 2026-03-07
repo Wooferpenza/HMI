@@ -149,8 +149,20 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <addaction name="actionModbusSettings"/>
+   </widget>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionModbusSettings">
+   <property name="text">
+    <string>Modbus...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

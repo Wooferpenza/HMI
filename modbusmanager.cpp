@@ -1,6 +1,5 @@
 #include "modbusmanager.h"
 #include "modbusmodel.h"
-#include <QDebug>
 #include <QModbusReply>
 #include <QModbusDataUnit>
 #include <cstdint>
@@ -33,9 +32,13 @@ static quint32 unpackDWordLowWordFirst(uint16_t low, uint16_t high)
 
 ModbusManager::ModbusManager(ModbusModel *model, QObject *parent) : QObject(parent), m_model(model) {
     m_client = new QModbusTcpClient(this);
-    connect(m_client, &QModbusClient::stateChanged, this, [](QModbusDevice::State state){
-        if (state == QModbusDevice::ConnectedState) { qDebug()<< "Готов к работе "; }
-    });
+    m_client->setTimeout(5000);
+
+    connect(m_client, &QModbusClient::stateChanged, this, &ModbusManager::onClientStateChanged);
+
+    m_reconnectTimer = new QTimer(this);
+    m_reconnectTimer->setSingleShot(true);
+    connect(m_reconnectTimer, &QTimer::timeout, this, &ModbusManager::tryReconnect);
 }
 
 void ModbusManager::setUnitId(int unitId)
@@ -47,9 +50,58 @@ void ModbusManager::setUnitId(int unitId)
     m_unitId = unitId;
 }
 
+void ModbusManager::setRequestTimeoutMs(int ms)
+{
+    if (ms < 500)
+        ms = 500;
+    m_client->setTimeout(ms);
+}
+
+void ModbusManager::setReconnectIntervalMs(int ms)
+{
+    if (ms < 2000)
+        ms = 2000;
+    m_reconnectIntervalMs = ms;
+}
+
 void ModbusManager::connectTo(const QString &ip, int port) {
+    m_connectionIp = ip;
+    m_connectionPort = port;
+    if (m_client->state() != QModbusDevice::UnconnectedState)
+        m_client->disconnectDevice();
     m_client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, ip);
     m_client->setConnectionParameter(QModbusDevice::NetworkPortParameter, port);
+    m_client->connectDevice();
+}
+
+void ModbusManager::onClientStateChanged(QModbusDevice::State state)
+{
+    switch (state) {
+    case QModbusDevice::UnconnectedState:
+        emit connectionStateChanged(tr("Отключено"));
+        m_reconnectTimer->start(m_reconnectIntervalMs);
+        break;
+    case QModbusDevice::ConnectingState:
+        emit connectionStateChanged(tr("Подключение..."));
+        m_reconnectTimer->stop();
+        break;
+    case QModbusDevice::ConnectedState:
+        emit connectionStateChanged(tr("Подключено"));
+        m_reconnectTimer->stop();
+        break;
+    case QModbusDevice::ClosingState:
+        emit connectionStateChanged(tr("Отключение..."));
+        break;
+    }
+}
+
+void ModbusManager::tryReconnect()
+{
+    if (m_connectionIp.isEmpty())
+        return;
+    emit connectionStateChanged(tr("Переподключение..."));
+    m_client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, m_connectionIp);
+    m_client->setConnectionParameter(QModbusDevice::NetworkPortParameter, m_connectionPort);
     m_client->connectDevice();
 }
 
@@ -140,8 +192,12 @@ void ModbusManager::processQueue() {
         reply = m_client->sendWriteRequest(unit, m_unitId);
     }
 
-    if (reply) connect(reply, &QModbusReply::finished, this, &ModbusManager::onReplyFinished);
-    else { m_busy = false; processQueue(); }
+    if (reply) {
+        connect(reply, &QModbusReply::finished, this, &ModbusManager::onReplyFinished);
+    } else {
+        m_busy = false;
+        processQueue();
+    }
 }
 
 void ModbusManager::onReplyFinished() {
@@ -152,7 +208,8 @@ void ModbusManager::onReplyFinished() {
                 parseReadData(reply->result());
             }
         } else {
-            qDebug() << "Modbus error:" << reply->errorString();
+            const QString err = reply->errorString();
+            emit lastError(err);
         }
         reply->deleteLater();
     }

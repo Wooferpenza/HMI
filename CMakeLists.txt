@@ -17,6 +17,9 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        modbussettingsdialog.h
+        modbussettingsdialog.cpp
+        modbussettingsdialog.ui
         numpaddialog.h
         numpaddialog.cpp
         numpaddialog.ui

@@ -23,6 +23,7 @@ public:
 
 private slots:
     void showNumPad();
+    void showModbusSettings();
 
 private:
     Ui::MainWindow *ui;
