@@ -44,7 +44,6 @@ void NumpadDialog::handleNumberButton()
 {
     QPushButton *button = qobject_cast<QPushButton *>(sender());
     if (button) {
-        qDebug() << "Нажата кнопка:" << button->text();
         ui->lineEdit->insert(button->text());
     }
 }
@@ -73,21 +72,25 @@ void NumpadDialog::handleRightButton()
 
 void NumpadDialog::handleMinusButton()
 {
-    QString currentText(ui->lineEdit->text());
-    if (currentText.at(0) == "-") {
-        currentText.removeFirst();
-    } else {
-        currentText.push_front("-");
-    }
+    QString currentText = ui->lineEdit->text();
+    if (currentText.startsWith('-'))
+        currentText.remove(0, 1);
+    else
+        currentText.prepend('-');
     ui->lineEdit->setText(currentText);
 }
 
 void NumpadDialog::handleEnterButton()
 {
-    QString resultStr = ui->lineEdit->text();
-    float result = resultStr.toFloat();
-    if ((result < minimum) or (result > maximum)) {
-        QMessageBox::warning(this, "Error", "Exceed the limit");
+    const QString resultStr = ui->lineEdit->text().trimmed();
+    bool ok = false;
+    const float result = resultStr.toFloat(&ok);
+    if (!ok || resultStr.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Введите число");
+        return;
+    }
+    if ((result < minimum) || (result > maximum)) {
+        QMessageBox::warning(this, "Ошибка", "Значение вне диапазона");
     } else {
         emit enterFloat(result);
         emit enterInt(int(result));

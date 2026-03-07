@@ -3,13 +3,14 @@
 
 #include <QLineEdit>
 #include <QObject>
+#include <QVariant>
 
 class NumericDisplay : public QLineEdit
 {
     Q_OBJECT
 private:
     float mValue, mMinimumValue, mMaximumValue;
-    void cheсkRange();
+    void checkRange();
 
 public:
     NumericDisplay(QWidget *parent = nullptr);
@@ -22,12 +23,13 @@ public:
 
 signals:
     void clicked();
-public  slots:
+public slots:
     void setValue(float val);
+    void setValue(const QVariant &value);
 protected:
     void mousePressEvent(QMouseEvent *event) override
     {
-        QLineEdit::mouseReleaseEvent(event); // Вызываем стандартную обработку
+        QLineEdit::mousePressEvent(event); // Вызываем стандартную обработку
         emit clicked();                      // Испускаем сигнал
     }
 

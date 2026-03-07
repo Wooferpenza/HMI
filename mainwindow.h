@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "modbusmanager.h"
+
+class ModbusModel;
+class ModbusManager;
+class QTimer;
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -19,12 +23,12 @@ public:
 
 private slots:
     void showNumPad();
-    void displayUpdate(QString name,QVariant val);
+
 private:
     Ui::MainWindow *ui;
-    ModbusModel *model;
-    ModbusManager *manager;
-    QTimer *timer;
+    ModbusModel *model = nullptr;
+    ModbusManager *manager = nullptr;
+    QTimer *timer = nullptr;
     void connectDisplay();
 };
 

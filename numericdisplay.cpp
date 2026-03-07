@@ -1,6 +1,7 @@
 #include "numericdisplay.h"
+#include <QVariant>
 
-void NumericDisplay::cheсkRange()
+void NumericDisplay::checkRange()
 {
     if (mValue < mMinimumValue)
         mValue = mMinimumValue;
@@ -19,8 +20,13 @@ NumericDisplay::NumericDisplay(QWidget *parent)
 void NumericDisplay::setValue(float val)
 {
     mValue = val;
-    NumericDisplay::cheсkRange();
-    NumericDisplay::setText(QString::number(mValue, 'f', 2));
+    checkRange();
+    setText(QString::number(mValue, 'f', 2));
+}
+
+void NumericDisplay::setValue(const QVariant &value)
+{
+    setValue(value.toDouble());
 }
 
 void NumericDisplay::setMinimum(float min)

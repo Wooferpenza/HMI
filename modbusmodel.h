@@ -2,8 +2,8 @@
 #define MODBUSMODEL_H
 
 #include <QAbstractListModel>
+#include <QHash>
 #include <QList>
-#include <QMap>
 #include "modbuscommon.h"
 
 class ModbusModel : public QAbstractListModel {
@@ -19,20 +19,34 @@ public:
     }
 
     void updateVariable(const QString &name, const QVariant &val) {
-        for (int i = 0; i < m_vars.size(); ++i) {
-            if (m_vars[i]->name == name) {
-                m_vars[i]->value = val;
-                emit dataChanged(index(i), index(i));
-                emit variableUpdated(name, val);
-                emit m_vars[i]->update(val.toFloat());
-                break;
-            }
-        }
+        ModbusVar *var = m_varByName.value(name, nullptr);
+        if (!var)
+            return;
+
+        var->value = val;
+
+        const int row = m_vars.indexOf(var);
+        if (row >= 0)
+            emit dataChanged(index(row), index(row));
+
+        emit variableUpdated(name, val);
+        emit var->valueChanged(val);
     }
 
-    void addVar(QString n, uint16_t a, VarType t)
+    void addVar(const QString &n, uint16_t a, VarType t, int bitIndex = -1)
     {
-        m_vars << new ModbusVar(n,a,t);
+        if (m_varByName.contains(n))
+            return;
+
+        int insertPos = 0;
+        while (insertPos < m_vars.size() && m_vars[insertPos]->address < a)
+            ++insertPos;
+
+        beginInsertRows(QModelIndex(), insertPos, insertPos);
+        auto *var = new ModbusVar(n, a, t, this, bitIndex);
+        m_vars.insert(insertPos, var);
+        m_varByName.insert(n, var);
+        endInsertRows();
     }
 
     // Новый API доступа к переменным
@@ -41,12 +55,7 @@ public:
     const ModbusVar &variableAt(int index) const { return * m_vars[index] ; }
 
     ModbusVar *findVariable(const QString &name) const {
-        for (int i = 0; i < m_vars.size(); ++i) {
-            if (m_vars[i]->name == name) {
-                return m_vars[i];
-            }
-        }
-        return nullptr;
+        return m_varByName.value(name, nullptr);
     }
 
 signals:
@@ -54,6 +63,6 @@ signals:
 
 private:
     QList<ModbusVar*> m_vars;
-    //QMap<QString, ModbusVar*> m_vars;
+    QHash<QString, ModbusVar*> m_varByName;
 };
 #endif

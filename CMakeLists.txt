@@ -9,28 +9,29 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-find_package(Qt6 REQUIRED COMPONENTS SerialBus)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialBus)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialBus)
 
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        numpaddialog.h
+        numpaddialog.cpp
+        numpaddialog.ui
+        numericdisplay.h
+        numericdisplay.cpp
+        modbuscommon.h
+        modbusmanager.h
+        modbusmodel.h
+        modbusmanager.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(HMI
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        numpaddialog.h numpaddialog.cpp numpaddialog.ui
-
-        numericdisplay.h numericdisplay.cpp
-        modbuscommon.h
-        modbusmanager.h
-        modbusmodel.h
-        modbusmanager.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET HMI APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -50,8 +51,15 @@ else()
     endif()
 endif()
 
-target_link_libraries(HMI PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(HMI PRIVATE Qt${QT_VERSION_MAJOR}::SerialBus)
+target_include_directories(HMI PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+target_link_libraries(HMI PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::SerialBus
+)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.

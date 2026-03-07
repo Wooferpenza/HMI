@@ -1,18 +1,56 @@
 #include "modbusmanager.h"
 #include "modbusmodel.h"
+#include <QDebug>
 #include <QModbusReply>
 #include <QModbusDataUnit>
+#include <cstdint>
+#include <cstring>
+
+static QVector<uint16_t> packFloatLowWordFirst(float f)
+{
+    uint32_t r = 0;
+    std::memcpy(&r, &f, sizeof(float));
+    return {static_cast<uint16_t>(r & 0xFFFFu), static_cast<uint16_t>(r >> 16)};
+}
+
+static float unpackFloatLowWordFirst(uint16_t low, uint16_t high)
+{
+    uint32_t r = (uint32_t(high) << 16) | low;
+    float f = 0.0f;
+    std::memcpy(&f, &r, sizeof(float));
+    return f;
+}
+
+static QVector<uint16_t> packDWordLowWordFirst(quint32 v)
+{
+    return {static_cast<uint16_t>(v & 0xFFFFu), static_cast<uint16_t>(v >> 16)};
+}
+
+static quint32 unpackDWordLowWordFirst(uint16_t low, uint16_t high)
+{
+    return (quint32(high) << 16) | low;
+}
+
 ModbusManager::ModbusManager(ModbusModel *model, QObject *parent) : QObject(parent), m_model(model) {
     m_client = new QModbusTcpClient(this);
+    connect(m_client, &QModbusClient::stateChanged, this, [](QModbusDevice::State state){
+        if (state == QModbusDevice::ConnectedState) { qDebug()<< "Готов к работе "; }
+    });
+}
+
+void ModbusManager::setUnitId(int unitId)
+{
+    if (unitId < 1)
+        unitId = 1;
+    if (unitId > 247)
+        unitId = 247;
+    m_unitId = unitId;
 }
 
 void ModbusManager::connectTo(const QString &ip, int port) {
     m_client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, ip);
     m_client->setConnectionParameter(QModbusDevice::NetworkPortParameter, port);
     m_client->connectDevice();
-    connect(m_client, &QModbusClient::stateChanged, [](QModbusDevice::State state){
-        if (state == QModbusDevice::ConnectedState) { qDebug()<< "Готов к работе "; }
-    });
 }
 
 void ModbusManager::triggerPoll() {
@@ -58,17 +96,33 @@ void ModbusManager::writeVariable(const QString &name, QVariant value) {
         return;
 
     QVector<uint16_t> data;
-    if (var->type == VarType::Float) {
-        float f = value.toFloat();
-        uint32_t r;
-        memcpy(&r, &f, 4);
-        //data << (uint16_t)(r >> 16) << (uint16_t)(r & 0xFFFF);
-        data <<  (uint16_t)(r & 0xFFFF) << (uint16_t)(r >> 16);
-    } else {
-        data << (uint16_t)value.toUInt();
+    switch (var->type) {
+    case VarType::Bool: {
+        if (var->bitIndex >= 0 && var->bitIndex <= 15) {
+            quint16 reg = m_registerCache.value(var->address, 0);
+            if (value.toBool())
+                reg |= (1u << var->bitIndex);
+            else
+                reg &= ~(1u << var->bitIndex);
+            data << reg;
+            m_registerCache.insert(var->address, reg);
+        } else {
+            data << (value.toBool() ? 1u : 0u);
+        }
+        break;
+    }
+    case VarType::Word:
+        data << static_cast<uint16_t>(value.toUInt() & 0xFFFFu);
+        break;
+    case VarType::DWord:
+        data = packDWordLowWordFirst(static_cast<quint32>(value.toUInt()));
+        break;
+    case VarType::Float:
+        data = packFloatLowWordFirst(value.toFloat());
+        break;
     }
 
-    m_queue.prepend({ModbusRequest::Write, var->address, (uint16_t)var->regCount(), data});
+    m_queue.prepend({ModbusRequest::Write, var->address, static_cast<uint16_t>(var->regCount()), data});
     processQueue();
 }
 
@@ -76,13 +130,14 @@ void ModbusManager::processQueue() {
     if (m_queue.isEmpty() || m_busy) return;
     m_busy = true;
     auto req = m_queue.dequeue();
+    m_inFlightType = req.type;
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, req.startAddress, req.count);
 
     QModbusReply *reply = nullptr;
-    if (req.type == ModbusRequest::Read) reply = m_client->sendReadRequest(unit, 1);
+    if (req.type == ModbusRequest::Read) reply = m_client->sendReadRequest(unit, m_unitId);
     else {
         for(int i=0; i<req.data.size(); ++i) unit.setValue(i, req.data[i]);
-        reply = m_client->sendWriteRequest(unit, 1);
+        reply = m_client->sendWriteRequest(unit, m_unitId);
     }
 
     if (reply) connect(reply, &QModbusReply::finished, this, &ModbusManager::onReplyFinished);
@@ -91,11 +146,18 @@ void ModbusManager::processQueue() {
 
 void ModbusManager::onReplyFinished() {
     auto *reply = qobject_cast<QModbusReply*>(sender());
-    if (reply && reply->error() == QModbusDevice::NoError)// && reply->type() == QModbusReply::Raw)
-        parseReadData(reply->result());
+    if (reply) {
+        if (reply->error() == QModbusDevice::NoError) {
+            if (m_inFlightType == ModbusRequest::Read) {
+                parseReadData(reply->result());
+            }
+        } else {
+            qDebug() << "Modbus error:" << reply->errorString();
+        }
+        reply->deleteLater();
+    }
 
     m_busy = false;
-    reply->deleteLater();
     processQueue();
 }
 
@@ -111,17 +173,31 @@ void ModbusManager::parseReadData(const QModbusDataUnit &res) {
         uint16_t offset = static_cast<uint16_t>(v.address - start);
 
         QVariant val;
-        if (v.type == VarType::Float) {
-            if (offset + 1 >= valuesCount)
-                continue; // защитимся от выхода за границы
-            uint32_t r = (uint32_t(res.value(offset+1)) << 16) | res.value(offset);
-            float f;
-            memcpy(&f, &r, 4);
-            val = f;
-        } else {
+        switch (v.type) {
+        case VarType::Bool:
+            if (v.bitIndex >= 0 && v.bitIndex <= 15)
+                val = ((res.value(offset) >> v.bitIndex) & 1) != 0;
+            else
+                val = (res.value(offset) != 0);
+            break;
+        case VarType::Word:
             val = res.value(offset);
+            break;
+        case VarType::DWord:
+            if (offset + 1 >= valuesCount)
+                continue;
+            val = unpackDWordLowWordFirst(res.value(offset), res.value(offset + 1));
+            break;
+        case VarType::Float:
+            if (offset + 1 >= valuesCount)
+                continue;
+            val = unpackFloatLowWordFirst(res.value(offset), res.value(offset + 1));
+            break;
         }
 
         m_model->updateVariable(v.name, val);
     }
+
+    for (int i = 0; i < res.valueCount(); ++i)
+        m_registerCache[res.startAddress() + i] = res.value(i);
 }
