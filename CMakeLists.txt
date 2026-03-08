@@ -27,8 +27,9 @@ set(PROJECT_SOURCES
         numericdisplay.cpp
         modbuscommon.h
         modbusmanager.h
-        modbusmodel.h
         modbusmanager.cpp
+        modbusmodel.h
+        modbusmodel.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

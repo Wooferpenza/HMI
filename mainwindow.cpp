@@ -1,17 +1,36 @@
 #include "mainwindow.h"
-#include <QCheckBox>
-#include <QSettings>
-#include <QTimer>
-#include "ui_mainwindow.h"
+#include "modbusmanager.h"
+#include "modbusmodel.h"
+#include "modbussettings.h"
+#include "modbussettingsdialog.h"
 #include "numericdisplay.h"
 #include "numpaddialog.h"
-#include "modbussettingsdialog.h"
-#include "modbusmodel.h"
-#include "modbusmanager.h"
+#include "ui_mainwindow.h"
+#include "variable.h"
+#include <QSettings>
 
 namespace {
-constexpr const char kModbusVarNameProp[] = "modbusVarName";
-}
+
+// Привязка виджет → Modbus: имя виджета (objectName в UI), имя переменной, адрес регистра.
+// Опционально: тип, формат, лимиты — задаются только если нужны не по умолчанию.
+struct VariableBinding {
+    const char *widgetName;
+    const char *varName;
+    quint16 address;
+    DataType type = DataType::Word;
+    DataFormat format = DataFormat::UnsignedDecimal;
+    float min = 0.0f;
+    float max = 100.0f;
+    int fractional = 0;
+    bool hasVariableConfig = false; // true — применить type/format/min/max/fractional
+};
+
+const VariableBinding kVariableBindings[] = {
+    {"lineEdit", "Temp", 100},
+    {"lineEditCounter", "Counter", 102, DataType::DWord, DataFormat::Floating, -10.0f, 65535.0f, 2, true},
+};
+
+} // namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,55 +38,41 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QSettings s;
-    const QString ip = s.value("modbus/ip", "192.168.1.5").toString();
-    const int port = s.value("modbus/port", 502).toInt();
-    const int unitId = s.value("modbus/unitId", 1).toInt();
-    int pollMs = s.value("modbus/pollIntervalMs", 1000).toInt();
-    if (pollMs < 50)
-        pollMs = 50;
+    const auto displays = findChildren<NumericDisplay*>();
+    for (NumericDisplay *display : displays) {
+        if (!display)
+            continue;
+        connect(display, &NumericDisplay::clicked, this, &MainWindow::showNumPad);
+    }
 
-    if (!s.contains("modbus/ip")) s.setValue("modbus/ip", ip);
-    if (!s.contains("modbus/port")) s.setValue("modbus/port", port);
-    if (!s.contains("modbus/unitId")) s.setValue("modbus/unitId", unitId);
-    if (!s.contains("modbus/pollIntervalMs")) s.setValue("modbus/pollIntervalMs", pollMs);
+    QSettings s;
+    ModbusSettings modbusCfg = ModbusSettings::load(s);
 
     model = new ModbusModel(this);
-    model->addVar("Temp", 100, VarType::Float);
-    model->addVar("Temp1", 104, VarType::Float);
-    model->addVar("Counter", 110, VarType::Word);
-    model->addVar("Total", 111, VarType::DWord);
-    model->addVar("Flag", 111, VarType::Bool, 0);   // бит 0 регистра 113
-    model->addVar("Flag1", 111, VarType::Bool, 1);  // бит 1 регистра 113
 
-    ui->lineEdit->setProperty(kModbusVarNameProp, "Temp");
-    ui->lineEdit2->setProperty(kModbusVarNameProp, "Temp1");
-    ui->lineEditCounter->setProperty(kModbusVarNameProp, "Counter");
-    ui->lineEditTotal->setProperty(kModbusVarNameProp, "Total");
-    ui->checkBoxFlag->setProperty(kModbusVarNameProp, "Flag");
-    ui->checkBoxFlag1->setProperty(kModbusVarNameProp, "Flag1");
+    for (const VariableBinding &b : kVariableBindings) {
+        auto *display = findChild<NumericDisplay *>(QLatin1String(b.widgetName));
+        if (!display)
+            continue;
+        display->variable.setName(QLatin1String(b.varName));
+        if (b.hasVariableConfig) {
+            display->variable.setType(b.type);
+            display->variable.setFormat(b.format);
+            display->variable.setMinimum(b.min);
+            display->variable.setMaximum(b.max);
+            display->variable.setFractional(static_cast<uint16_t>(b.fractional));
+        }
+        model->addVar(&display->variable, b.address);
+    }
 
-    ui->lineEditCounter->variable.setMinimum(-100);
-    ui->lineEditCounter->variable.setMaximum(65535);
-    ui->lineEditCounter->variable.setFormat(DataFormat::Floating);
-    // ui->lineEditCounter->setDecimals(0);
-    // ui->lineEditTotal->setMinimum(0);
-    // ui->lineEditTotal->setMaximum(2147483647.0);
-
-    connectDisplay();
     manager = new ModbusManager(model, this);
-    manager->setUnitId(unitId);
     connect(manager, &ModbusManager::connectionStateChanged, this, [this](const QString &stateText) {
         ui->statusbar->showMessage(stateText, 0);
     });
     connect(manager, &ModbusManager::lastError, this, [this](const QString &errorText) {
         ui->statusbar->showMessage(tr("Ошибка Modbus: %1").arg(errorText), 5000);
     });
-    manager->connectTo(ip, port);
-
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, manager, &ModbusManager::triggerPoll);
-    timer->start(pollMs);
+    manager->applySettings(modbusCfg);
 
     connect(ui->actionModbusSettings, &QAction::triggered, this, &MainWindow::showModbusSettings);
 }
@@ -89,58 +94,13 @@ void MainWindow::showNumPad()
 void MainWindow::showModbusSettings()
 {
     QSettings s;
-    ModbusSettings current;
-    current.ip = s.value("modbus/ip", "192.168.1.5").toString();
-    current.port = s.value("modbus/port", 502).toInt();
-    current.unitId = s.value("modbus/unitId", 1).toInt();
-    current.pollIntervalMs = s.value("modbus/pollIntervalMs", 1000).toInt();
-
-    ModbusSettingsDialog dlg(current, this);
+    ModbusSettingsDialog dlg(ModbusSettings::load(s), this);
     if (dlg.exec() != QDialog::Accepted)
         return;
 
     const ModbusSettings newSettings = dlg.settings();
-    int pollMs = newSettings.pollIntervalMs;
-    if (pollMs < 50)
-        pollMs = 50;
-
-    s.setValue("modbus/ip", newSettings.ip);
-    s.setValue("modbus/port", newSettings.port);
-    s.setValue("modbus/unitId", newSettings.unitId);
-    s.setValue("modbus/pollIntervalMs", pollMs);
-
-    manager->setUnitId(newSettings.unitId);
-    manager->connectTo(newSettings.ip, newSettings.port);
-
-    timer->stop();
-    timer->start(pollMs);
+    newSettings.save(s);
+    manager->applySettings(newSettings);
 }
 
-void MainWindow::connectDisplay()
-{
-    const auto displays = findChildren<NumericDisplay*>();
-    for (auto *display : displays) {
-        const QString varName = display->property(kModbusVarNameProp).toString();
-        ModbusVar *var = varName.isEmpty() ? nullptr : model->findVariable(varName);
-        if (var) {
-            //connect(var, &ModbusVar::valueChanged, display, qOverload<const QVariant &>(&NumericDisplay::setValue));
-        }
-        connect(display, &NumericDisplay::clicked, this, &MainWindow::showNumPad);
-    }
 
-    const auto checkBoxes = findChildren<QCheckBox*>();
-    for (auto *cb : checkBoxes) {
-        const QString varName = cb->property(kModbusVarNameProp).toString();
-        if (varName.isEmpty())
-            continue;
-        ModbusVar *var = model->findVariable(varName);
-        if (!var)
-            continue;
-        connect(var, &ModbusVar::valueChanged, cb, [cb](const QVariant &v) {
-            cb->setChecked(v.toBool());
-        });
-        connect(cb, &QCheckBox::toggled, this, [this, varName](bool checked) {
-            manager->writeVariable(varName, checked);
-        });
-    }
-}

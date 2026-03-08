@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QModbusTcpClient>
 #include "modbuscommon.h"
+#include "modbussettings.h"
 
 class ModbusModel;
 
@@ -18,7 +19,9 @@ public:
     void setUnitId(int unitId);
     void setRequestTimeoutMs(int ms);
     void setReconnectIntervalMs(int ms);
-    void writeVariable(const QString &name, QVariant value);
+    void setPollIntervalMs(int ms);
+    void applySettings(const ModbusSettings &settings);
+    void writeVariable(const QString &name, QVector<uint16_t> value);
 
 signals:
     void connectionStateChanged(const QString &stateText);
@@ -34,11 +37,10 @@ private slots:
     void tryReconnect();
 
 private:
-    void parseReadData(const struct QModbusDataUnit &res);
+    void parseReadData(const QModbusDataUnit &res);
     QModbusTcpClient *m_client;
     ModbusModel *m_model;
     QQueue<ModbusRequest> m_queue;
-    QHash<quint16, quint16> m_registerCache;  ///< Кэш регистров для read-modify-write битов
     bool m_busy = false;
     int m_unitId = 1;
     ModbusRequest::Type m_inFlightType = ModbusRequest::Read;
@@ -46,6 +48,8 @@ private:
     int m_connectionPort = 502;
     QTimer *m_reconnectTimer = nullptr;
     int m_reconnectIntervalMs = 5000;
+    QTimer *m_pollTimer = nullptr;
+    int m_pollIntervalMs = 1000;
 };
 
 #endif

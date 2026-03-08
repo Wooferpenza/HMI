@@ -1,18 +1,12 @@
 #ifndef MODBUSSETTINGSDIALOG_H
 #define MODBUSSETTINGSDIALOG_H
 
+#include "modbussettings.h"
 #include <QDialog>
 
 namespace Ui {
 class ModbusSettingsDialog;
 }
-
-struct ModbusSettings {
-    QString ip;
-    int port = 502;
-    int unitId = 1;
-    int pollIntervalMs = 1000;
-};
 
 class ModbusSettingsDialog : public QDialog
 {

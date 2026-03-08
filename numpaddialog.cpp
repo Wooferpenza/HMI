@@ -95,7 +95,7 @@ void NumpadDialog::handleEnterButton()
     switch (mFormat) {
     case DataFormat::Floating:
     {result = resultStr.toFloat(&ok);
-    break;}
+        break;}
     case DataFormat::UnsignedDecimal:
     case DataFormat::SignedDecimal:
     {result = resultStr.toInt(&ok);break; }

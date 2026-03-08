@@ -5,7 +5,6 @@
 
 class ModbusModel;
 class ModbusManager;
-class QTimer;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,8 +28,7 @@ private:
     Ui::MainWindow *ui;
     ModbusModel *model = nullptr;
     ModbusManager *manager = nullptr;
-    QTimer *timer = nullptr;
-    void connectDisplay();
+
 };
 
 #endif // MAINWINDOW_H

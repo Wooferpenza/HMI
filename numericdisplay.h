@@ -22,7 +22,7 @@ protected:
         emit clicked();                    // Испускаем сигнал
     }
 public slots:
-     void inputData(QVariant data);
+    void inputData(QVariant data);
     void  displayData(QVariant);
 
 };
