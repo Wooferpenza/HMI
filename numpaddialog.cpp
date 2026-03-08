@@ -5,7 +5,7 @@
 #include <QString>
 #include "ui_numpaddialog.h"
 
-NumpadDialog::NumpadDialog(QWidget *parent)
+NumpadDialog::NumpadDialog(QWidget *parent, DataFormat format, float min, float max)
     : QDialog(parent)
     , ui(new Ui::NumpadDialog)
 {
@@ -25,7 +25,10 @@ NumpadDialog::NumpadDialog(QWidget *parent)
     connect(ui->pushButtonRight, &QPushButton::clicked, this, &NumpadDialog::handleRightButton);
     connect(ui->pushButtonPlusMinus, &QPushButton::clicked, this, &NumpadDialog::handleMinusButton);
     connect(ui->pushButtonENT, &QPushButton::clicked, this, &NumpadDialog::handleEnterButton);
+    setFormat(format); setRange(min,max);
 }
+
+
 
 NumpadDialog::~NumpadDialog()
 {
@@ -34,9 +37,14 @@ NumpadDialog::~NumpadDialog()
 
 void NumpadDialog::setRange(float min, float max)
 {
-    minimum = min;
-    maximum = max;
-    ui->label->setText(QString::number(minimum) + " ~ " + QString::number(maximum));
+    mMinimum = min;
+    mMaximum = max;
+    ui->label->setText(QString::number(mMinimum) + " ~ " + QString::number(mMaximum));
+}
+
+void NumpadDialog::setFormat(DataFormat format)
+{
+    mFormat=format;
 }
 
 void NumpadDialog::handleNumberButton()
@@ -83,16 +91,26 @@ void NumpadDialog::handleEnterButton()
 {
     const QString resultStr = ui->lineEdit->text().trimmed();
     bool ok = false;
-    const float result = resultStr.toFloat(&ok);
+    QVariant result;
+    switch (mFormat) {
+    case DataFormat::Floating:
+    {result = resultStr.toFloat(&ok);
+    break;}
+    case DataFormat::UnsignedDecimal:
+    case DataFormat::SignedDecimal:
+    {result = resultStr.toInt(&ok);break; }
+    default:
+        break;
+    }
     if (!ok || resultStr.isEmpty()) {
         QMessageBox::warning(this, "Ошибка", "Введите число");
         return;
     }
-    if ((result < minimum) || (result > maximum)) {
+    if ((result.toFloat() < mMinimum) || (result.toFloat() > mMaximum)) {
         QMessageBox::warning(this, "Ошибка", "Значение вне диапазона");
     } else {
-        emit enterFloat(result);
-        emit enterInt(int(result));
+        emit enter(result);
+
         close();
     }
 }

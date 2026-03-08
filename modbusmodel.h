@@ -5,6 +5,7 @@
 #include <QHash>
 #include <QList>
 #include "modbuscommon.h"
+#include "variable.h"
 
 class ModbusModel : public QAbstractListModel {
     Q_OBJECT
@@ -33,24 +34,16 @@ public:
         emit var->valueChanged(val);
     }
 
-    void addVar(const QString &n, uint16_t a, VarType t, int bitIndex = -1)
+    void addVar(Variable *pVar)
     {
-        if (m_varByName.contains(n))
+        if (pVar==nullptr)
             return;
 
-        int insertPos = 0;
-        while (insertPos < m_vars.size() && m_vars[insertPos]->address < a)
-            ++insertPos;
-
-        beginInsertRows(QModelIndex(), insertPos, insertPos);
-        auto *var = new ModbusVar(n, a, t, this, bitIndex);
-        m_vars.insert(insertPos, var);
-        m_varByName.insert(n, var);
-        endInsertRows();
+        mm_vars.push_back(pVar);
     }
 
     // Новый API доступа к переменным
-    int variableCount() const { return m_vars.size(); }
+    int variableCount() const { return mm_vars.size(); }
 
     const ModbusVar &variableAt(int index) const { return * m_vars[index] ; }
 
@@ -64,5 +57,6 @@ signals:
 private:
     QList<ModbusVar*> m_vars;
     QHash<QString, ModbusVar*> m_varByName;
+
 };
 #endif

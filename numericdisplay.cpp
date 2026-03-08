@@ -1,70 +1,17 @@
 #include "numericdisplay.h"
-#include <QVariant>
 
-void NumericDisplay::checkRange()
-{
-    if (mValue < mMinimumValue)
-        mValue = mMinimumValue;
-    if (mValue > mMaximumValue)
-        mValue = mMaximumValue;
+NumericDisplay::NumericDisplay(QWidget *parent): QLineEdit(parent) {
+    connect(&variable,&Variable::valueChanged,this,&NumericDisplay::displayData);
 }
 
-NumericDisplay::NumericDisplay(QWidget *parent)
-    : QLineEdit(parent)
+void NumericDisplay::inputData(QVariant data)
 {
-    mValue = 0;
-    mMinimumValue = 0;
-    mMaximumValue = 100;
+           variable.setValue(data);
+
 }
 
-void NumericDisplay::setDecimals(int decimals)
+void NumericDisplay::displayData(QVariant val)
 {
-    if (decimals < 0)
-        decimals = 0;
-    if (decimals > 10)
-        decimals = 10;
-    m_decimals = decimals;
-    setText(QString::number(mValue, 'f', m_decimals));
-}
-
-int NumericDisplay::decimals() const
-{
-    return m_decimals;
-}
-
-void NumericDisplay::setValue(float val)
-{
-    mValue = val;
-    checkRange();
-    setText(QString::number(mValue, 'f', m_decimals));
-}
-
-void NumericDisplay::setValue(const QVariant &value)
-{
-    setValue(value.toDouble());
-}
-
-void NumericDisplay::setMinimum(float min)
-{
-    mMinimumValue = min;
-}
-
-void NumericDisplay::setMaximum(float max)
-{
-    mMaximumValue = max;
-}
-
-float NumericDisplay::value()
-{
-    return mValue;
-}
-
-float NumericDisplay::minimumValue()
-{
-    return mMinimumValue;
-}
-
-float NumericDisplay::maximumValue()
-{
-    return mMaximumValue;
+    float value=val.toFloat();
+    this->setText(QString::number(value));
 }

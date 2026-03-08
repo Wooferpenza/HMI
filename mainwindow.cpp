@@ -47,11 +47,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->checkBoxFlag->setProperty(kModbusVarNameProp, "Flag");
     ui->checkBoxFlag1->setProperty(kModbusVarNameProp, "Flag1");
 
-    ui->lineEditCounter->setMinimum(-100);
-    ui->lineEditCounter->setMaximum(65535);
-    ui->lineEditCounter->setDecimals(0);
-    ui->lineEditTotal->setMinimum(0);
-    ui->lineEditTotal->setMaximum(2147483647.0);
+    ui->lineEditCounter->variable.setMinimum(-100);
+    ui->lineEditCounter->variable.setMaximum(65535);
+    ui->lineEditCounter->variable.setFormat(DataFormat::Floating);
+    // ui->lineEditCounter->setDecimals(0);
+    // ui->lineEditTotal->setMinimum(0);
+    // ui->lineEditTotal->setMaximum(2147483647.0);
 
     connectDisplay();
     manager = new ModbusManager(model, this);
@@ -79,20 +80,9 @@ MainWindow::~MainWindow()
 void MainWindow::showNumPad()
 {
     auto *display = qobject_cast<NumericDisplay *>(sender());
-    if (!display)
-        return;
-
-    NumpadDialog npd(this);
-    npd.setRange(display->minimumValue(), display->maximumValue());
-    connect(&npd, &NumpadDialog::enterFloat, display, qOverload<float>(&NumericDisplay::setValue));
-
-    const QString varName = display->property(kModbusVarNameProp).toString();
-    if (!varName.isEmpty()) {
-        connect(&npd, &NumpadDialog::enterFloat, this, [this, varName](float v) {
-            manager->writeVariable(varName, v);
-        });
-    }
-
+    if (!display) return;
+    NumpadDialog npd(this,display->variable.format(),display->variable.minimum(),display->variable.maximum());
+    connect(&npd, &NumpadDialog::enter, display,&NumericDisplay::inputData);
     npd.exec();
 }
 
@@ -133,7 +123,7 @@ void MainWindow::connectDisplay()
         const QString varName = display->property(kModbusVarNameProp).toString();
         ModbusVar *var = varName.isEmpty() ? nullptr : model->findVariable(varName);
         if (var) {
-            connect(var, &ModbusVar::valueChanged, display, qOverload<const QVariant &>(&NumericDisplay::setValue));
+            //connect(var, &ModbusVar::valueChanged, display, qOverload<const QVariant &>(&NumericDisplay::setValue));
         }
         connect(display, &NumericDisplay::clicked, this, &MainWindow::showNumPad);
     }

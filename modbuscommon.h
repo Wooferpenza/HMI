@@ -7,21 +7,19 @@
 #include <QVector>
 #include <cstdint>
 
-enum class VarType { Bool, Word, DWord, Float };
-
 class ModbusVar : public QObject {
     Q_OBJECT
 public:
-    explicit ModbusVar(const QString &nam, uint16_t addr, VarType tp, QObject *parent = nullptr, int bitIdx = -1)
-        : QObject(parent), name(nam), address(addr), type(tp), bitIndex(bitIdx)
-    {}
+    explicit ModbusVar(const QString &nam, uint16_t addr, size_t sz, QObject *parent = nullptr)
+        : QObject(parent), name(nam), address(addr), size(sz)
+    {
+        value.resize(size);
+    }
     QString name;
     uint16_t address;
-    VarType type;
-    QVariant value;
-    int bitIndex = -1;  ///< Для Bool: 0–15 — номер бита в слове; -1 — всё слово (0/ноль)
+    size_t size;
+    QVector<uint16_t> value;
 
-    int regCount() const { return (type == VarType::DWord || type == VarType::Float) ? 2 : 1; }
 signals:
     void valueChanged(const QVariant &value);
 };
