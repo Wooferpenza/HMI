@@ -17,17 +17,16 @@ struct VariableBinding {
     const char *widgetName;
     const char *varName;
     quint16 address;
-    DataType type = DataType::Word;
-    DataFormat format = DataFormat::UnsignedDecimal;
+    DataType type = DataType::UWord;
     float min = 0.0f;
     float max = 100.0f;
     int fractional = 0;
-    bool hasVariableConfig = false; // true — применить type/format/min/max/fractional
+    bool hasVariableConfig = false; // true — применить type/min/max/fractional
 };
 
 const VariableBinding kVariableBindings[] = {
-    {"lineEdit", "Temp", 100},
-    {"lineEditCounter", "Counter", 102, DataType::DWord, DataFormat::Floating, -10.0f, 65535.0f, 2, true},
+    {"lineEdit", "Temp", 100, DataType::UWord, -65539, 655350, 2, true},
+    {"lineEditCounter", "Counter", 102, DataType::Float, -10.0f, 65535.0f, 2, true},
 };
 
 } // namespace
@@ -57,7 +56,6 @@ MainWindow::MainWindow(QWidget *parent)
         display->variable.setName(QLatin1String(b.varName));
         if (b.hasVariableConfig) {
             display->variable.setType(b.type);
-            display->variable.setFormat(b.format);
             display->variable.setMinimum(b.min);
             display->variable.setMaximum(b.max);
             display->variable.setFractional(static_cast<uint16_t>(b.fractional));
@@ -86,7 +84,7 @@ void MainWindow::showNumPad()
 {
     auto *display = qobject_cast<NumericDisplay *>(sender());
     if (!display) return;
-    NumpadDialog npd(this,display->variable.format(),display->variable.minimum(),display->variable.maximum());
+    NumpadDialog npd(this,display->variable.type(),display->variable.minimum(),display->variable.maximum());
     connect(&npd, &NumpadDialog::enter, display,&NumericDisplay::inputData);
     npd.exec();
 }

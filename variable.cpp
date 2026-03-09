@@ -1,5 +1,4 @@
 #include "variable.h"
-#include "modbuscommon.h"
 #include <cstdint>
 
 Variable::Variable(QObject *parent)
@@ -17,19 +16,6 @@ void Variable::setType(DataType newType)
         return;
     m_type = newType;
     emit typeChanged();
-}
-
-DataFormat Variable::format() const
-{
-    return m_format;
-}
-
-void Variable::setFormat(DataFormat newFormat)
-{
-    if (m_format == newFormat)
-        return;
-    m_format = newFormat;
-    emit formatChanged();
 }
 
 QString Variable::name() const
@@ -101,20 +87,19 @@ uint16_t Variable::rowValueSize()
 {
     switch (m_type) {
     case DataType::Bit:
-    case DataType::Word:
+    case DataType::UWord:
+    case DataType::SWord:
         mRowValueSize = 1;
         break;
-    case DataType::DWord:
+    case DataType::UDWord:
+    case DataType::SDWord:
+    case DataType::Float:
         mRowValueSize = 2;
-        break;
-    case DataType::QWord:
-        mRowValueSize = 4;
         break;
     default:
         mRowValueSize = 1;
         break;
     }
-
     return mRowValueSize;
 }
 
@@ -123,30 +108,34 @@ void Variable::valueToRowValue()
     QVector<uint16_t> vec;
     switch (m_type) {
     case DataType::Bit:
-    case DataType::Word:
+    case DataType::UWord:
+    {
+        const uint32_t v = mValue.toUInt();
+        vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
+        break;
+    }
+    case DataType::SWord:
     {
         const quint32 v = mValue.toUInt();
         vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
         break;
     }
-    case DataType::DWord:
+    case DataType::UDWord:
+    case DataType::SDWord:
     {
-        if (m_format == DataFormat::Floating) {
-            vec = ModbusUtils::packFloatLowWordFirst(mValue.toFloat());
-        }
-        else
-        {
-            const quint32 v = mValue.toUInt();
-            vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
-            vec.push_back(static_cast<uint16_t>(v >> 16));
-        }
+        const quint32 v = mValue.toUInt();
+        vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
+        vec.push_back(static_cast<uint16_t>(v >> 16));
         break;
     }
-    case DataType::QWord:
-        vec.push_back(mValue.toUInt());
+    case DataType::Float:
+    {
+        vec = packFloatLowWordFirst(mValue.toFloat());
         break;
+    }
+
     default:
-        mRowValueSize = 1;
+
         break;
     }
 
@@ -156,48 +145,62 @@ void Variable::valueToRowValue()
 void Variable::setRowData(QVector<uint16_t> row)
 {
     mRowValue = row;
-
     QVariant decoded;
-    switch (m_type) {
+    switch (m_type)
+    {
     case DataType::Bit:
+    {
         decoded = (row.value(0) & 1u) != 0;
         break;
-    case DataType::Word:
-        decoded = row.value(0);
-        break;
-    case DataType::DWord:
-        if (row.size() >= 2) {
-            if (m_format == DataFormat::Floating) {
-                decoded = ModbusUtils::unpackFloatLowWordFirst(row[0], row[1]);
-            } else {
-                const quint32 dw = (static_cast<quint32>(row[1]) << 16) | row[0];
-                decoded = dw;
-            }
-        } else {
+    }
+    case DataType::UWord:
+    {
+        if (row.size()>=1)
+        {
             decoded = row.value(0);
         }
-        break;
-    case DataType::QWord:
-        if (row.size() >= 4) {
-            const qulonglong qw =
-                (static_cast<qulonglong>(row[3]) << 48) |
-                (static_cast<qulonglong>(row[2]) << 32) |
-                (static_cast<qulonglong>(row[1]) << 16) |
-                static_cast<qulonglong>(row[0]);
-            decoded = qw;
-        } else {
-            decoded = row.value(0);
-        }
-        break;
-    default:
-        decoded = row.value(0);
         break;
     }
+    case DataType::SWord:
+    {
+        if (row.size()>=1)
+        {
+            decoded = int16_t(row.value(0));
+        }
+        break;
+    }
+    case DataType::UDWord:
+        if (row.size() >= 2)
+        {
+            const uint32_t dw = (static_cast<uint32_t>(row[1]) << 16) | row[0];
+            decoded = dw;
+        }
+        break;
+    case DataType::SDWord:
+    {
+        if (row.size() >= 2)
+        {
+            const int32_t dw = (static_cast<int32_t>(row[1]) << 16) | row[0];
+            decoded = dw;
+        }
+        break;
+    }
+    case DataType::Float:
+    {
+        if (row.size() >= 2)
+        {
+            decoded = unpackFloatLowWordFirst(row[0], row[1]);
+        }
+        break;
+    }
+    default:
+        break;
 
+    }
     mValue = decoded;
     emit valueChanged(mValue);
-}
 
+}
 void Variable::setValue(QVariant val)
 {
     mValue = val;

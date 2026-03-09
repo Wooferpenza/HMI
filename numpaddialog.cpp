@@ -5,7 +5,7 @@
 #include <QString>
 #include "ui_numpaddialog.h"
 
-NumpadDialog::NumpadDialog(QWidget *parent, DataFormat format, float min, float max)
+NumpadDialog::NumpadDialog(QWidget *parent, DataType type, float min, float max)
     : QDialog(parent)
     , ui(new Ui::NumpadDialog)
 {
@@ -25,7 +25,7 @@ NumpadDialog::NumpadDialog(QWidget *parent, DataFormat format, float min, float 
     connect(ui->pushButtonRight, &QPushButton::clicked, this, &NumpadDialog::handleRightButton);
     connect(ui->pushButtonPlusMinus, &QPushButton::clicked, this, &NumpadDialog::handleMinusButton);
     connect(ui->pushButtonENT, &QPushButton::clicked, this, &NumpadDialog::handleEnterButton);
-    setFormat(format); setRange(min,max);
+    setType(type); setRange(min,max);
 }
 
 
@@ -42,9 +42,9 @@ void NumpadDialog::setRange(float min, float max)
     ui->label->setText(QString::number(mMinimum) + " ~ " + QString::number(mMaximum));
 }
 
-void NumpadDialog::setFormat(DataFormat format)
+void NumpadDialog::setType(DataType type)
 {
-    mFormat=format;
+    mType=type;
 }
 
 void NumpadDialog::handleNumberButton()
@@ -92,14 +92,34 @@ void NumpadDialog::handleEnterButton()
     const QString resultStr = ui->lineEdit->text().trimmed();
     bool ok = false;
     QVariant result;
-    switch (mFormat) {
-    case DataFormat::Floating:
-    {result = resultStr.toFloat(&ok);
-        break;}
-    case DataFormat::UnsignedDecimal:
-    case DataFormat::SignedDecimal:
-    {result = resultStr.toInt(&ok);break; }
-    default:
+    switch (mType)
+    {
+    case DataType::Float:
+    {
+        result = resultStr.toFloat(&ok);
+        break;
+    }
+    case DataType::UWord:
+    {
+        result = resultStr.toUShort(&ok);
+        break;
+    }
+    case DataType::SWord:
+    {
+        result = resultStr.toShort(&ok);
+        break;
+    }
+    case DataType::UDWord:
+    {
+        result = resultStr.toUInt(&ok);
+        break;
+    }
+    case DataType::SDWord:
+    {
+        result = resultStr.toInt(&ok);
+        break;
+    }
+        default:
         break;
     }
     if (!ok || resultStr.isEmpty()) {

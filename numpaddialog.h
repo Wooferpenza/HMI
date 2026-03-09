@@ -12,10 +12,10 @@ class NumpadDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit   NumpadDialog(QWidget *parent = nullptr,DataFormat format=DataFormat::UnsignedDecimal,float min=0, float max=100);
+    explicit   NumpadDialog(QWidget *parent = nullptr,DataType type=DataType::UWord,float min=0, float max=100);
     ~NumpadDialog();
     void setRange(float min, float max);
-    void setFormat(DataFormat);
+    void setType(DataType);
 signals:
     void enterInt(int);
     void enterFloat(float);
@@ -33,7 +33,7 @@ private:
     Ui::NumpadDialog *ui;
     float mMinimum;
     float mMaximum;
-    DataFormat mFormat;
+    DataType mType;
 };
 
 #endif // NUMPADDIALOG_H

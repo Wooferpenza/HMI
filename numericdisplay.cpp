@@ -14,24 +14,31 @@ void NumericDisplay::inputData(QVariant data)
 void NumericDisplay::displayData(QVariant val)
 {
     QString text;
-
-    switch (variable.format()) {
-    case DataFormat::SignedDecimal: {
+    switch (variable.type())
+    {
+    case DataType::UWord:
+    {
+        text = QString::number(val.toUInt());
+        break;
+    }
+    case DataType::SWord:
+    {
         text = QString::number(val.toInt());
         break;
     }
-    case DataFormat::UnsignedDecimal:
+    case DataType::UDWord:
+    {
         text = QString::number(val.toUInt());
         break;
-    case DataFormat::Hexadecimal:
-        text = "0x" + QString::number(val.toUInt(), 16).toUpper().rightJustified(4, '0');
+    }
+    case DataType::SDWord:
+    {
+        text = QString::number(val.toInt());
         break;
-    case DataFormat::Binary:
-        text = "0b" + QString::number(val.toUInt(), 2).rightJustified(16, '0');
-        break;
-    case DataFormat::Floating: {
+    }
+    case DataType::Float:
+    {
         text = QString::number(val.toFloat(), 'f', variable.fractional());
-
         break;
     }
     default:

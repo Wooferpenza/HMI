@@ -5,14 +5,38 @@
 #include <QVector>
 #include <QVariant>
 #include <cstdint>
-enum class DataType { Bit, Word, DWord, QWord };
-enum class DataFormat { SignedDecimal,UnsignedDecimal,Hexadecimal,Binary,Floating };
+inline QVector<uint16_t> packFloatLowWordFirst(float f)
+{
+    uint32_t r = 0;
+    std::memcpy(&r, &f, sizeof(float));
+    return {static_cast<uint16_t>(r & 0xFFFFu), static_cast<uint16_t>(r >> 16)};
+}
+
+inline float unpackFloatLowWordFirst(uint16_t low, uint16_t high)
+{
+    uint32_t r = (uint32_t(high) << 16) | low;
+    float f = 0.0f;
+    std::memcpy(&f, &r, sizeof(float));
+    return f;
+}
+
+inline QVector<uint16_t> packDWordLowWordFirst(quint32 v)
+{
+    return {static_cast<uint16_t>(v & 0xFFFFu), static_cast<uint16_t>(v >> 16)};
+}
+
+inline quint32 unpackDWordLowWordFirst(uint16_t low, uint16_t high)
+{
+    return (quint32(high) << 16) | low;
+}
+
+enum class DataType { Bit,UWord, SWord, UDWord, SDWord, Float, String };
 class Variable : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(DataType type READ type WRITE setType NOTIFY typeChanged FINAL)
-    Q_PROPERTY(DataFormat format READ format WRITE setFormat NOTIFY formatChanged FINAL)
+
     Q_PROPERTY(uint16_t integerDigit READ integerDigit WRITE setIntegerDigit NOTIFY integerDigitChanged FINAL)
     Q_PROPERTY(uint16_t fractional READ fractional WRITE setFractional NOTIFY fractionalChanged FINAL)
     Q_PROPERTY(float minimum READ minimum WRITE setMinimum NOTIFY minimumChanged FINAL)
@@ -23,10 +47,6 @@ public:
 
     DataType type() const;
     void setType(DataType newType);
-
-    DataFormat format() const;
-    void setFormat(DataFormat newFormat);
-
     QString name() const;
     void setName(const QString &newName);
 
@@ -63,8 +83,7 @@ signals:
     void rowValueChanged(QVector<uint16_t>);
 
 private:
-    DataType m_type = DataType::Word;
-    DataFormat m_format = DataFormat::UnsignedDecimal;
+    DataType m_type = DataType::UWord;
     QString m_name;
     uint16_t m_integerDigit = 0;
     uint16_t m_fractional = 0;

@@ -9,15 +9,12 @@ class ModbusModel : public QObject {
     Q_OBJECT
 public:
     explicit ModbusModel(QObject *parent = nullptr);
-
     void updateVariable(const QString &name, const QVector<uint16_t> &val);
     ModbusVar *addVar(const QString &name, uint16_t address, size_t size);
     void addVar(Variable *variable, uint16_t address);
-
     int variableCount() const { return m_vars.size(); }
     ModbusVar *variableAt(int index) const;
     ModbusVar *findVariable(const QString &name) const;
-
 signals:
     void requestWrite(const QString &name, QVector<uint16_t> value);
 
