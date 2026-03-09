@@ -1,5 +1,4 @@
 #include "variable.h"
-#include <cstdint>
 
 Variable::Variable(QObject *parent)
     : QObject{parent}
@@ -15,6 +14,18 @@ void Variable::setType(DataType newType)
     if (m_type == newType)
         return;
     m_type = newType;
+
+    switch (m_type) {
+    case DataType::UDWord:
+    case DataType::SDWord:
+    case DataType::Float:
+        m_rawValueSize = 2;
+        break;
+    default:
+        m_rawValueSize = 1;
+        break;
+    }
+
     emit typeChanged();
 }
 
@@ -29,19 +40,6 @@ void Variable::setName(const QString &newName)
         return;
     m_name = newName;
     emit nameChanged();
-}
-
-uint16_t Variable::integerDigit() const
-{
-    return m_integerDigit;
-}
-
-void Variable::setIntegerDigit(uint16_t newIntegerDigit)
-{
-    if (m_integerDigit == newIntegerDigit)
-        return;
-    m_integerDigit = newIntegerDigit;
-    emit integerDigitChanged();
 }
 
 uint16_t Variable::fractional() const
@@ -64,7 +62,7 @@ float Variable::minimum() const
 
 void Variable::setMinimum(float newMinimum)
 {
-    if (qFuzzyCompare(m_minimum, newMinimum))
+    if (qFuzzyIsNull(m_minimum - newMinimum))
         return;
     m_minimum = newMinimum;
     emit minimumChanged();
@@ -77,136 +75,117 @@ float Variable::maximum() const
 
 void Variable::setMaximum(float newMaximum)
 {
-    if (qFuzzyCompare(m_maximum, newMaximum))
+    if (qFuzzyIsNull(m_maximum - newMaximum))
         return;
     m_maximum = newMaximum;
     emit maximumChanged();
 }
 
-uint16_t Variable::rowValueSize()
+uint16_t Variable::rawValueSize() const
 {
-    switch (m_type) {
-    case DataType::Bit:
-    case DataType::UWord:
-    case DataType::SWord:
-        mRowValueSize = 1;
-        break;
-    case DataType::UDWord:
-    case DataType::SDWord:
-    case DataType::Float:
-        mRowValueSize = 2;
-        break;
-    default:
-        mRowValueSize = 1;
-        break;
-    }
-    return mRowValueSize;
+    return m_rawValueSize;
 }
 
-void Variable::valueToRowValue()
+void Variable::valueToRawValue()
 {
     QVector<uint16_t> vec;
     switch (m_type) {
     case DataType::Bit:
     case DataType::UWord:
     {
-        const uint32_t v = mValue.toUInt();
+        const uint32_t v = m_value.toUInt();
         vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
         break;
     }
     case DataType::SWord:
     {
-        const quint32 v = mValue.toUInt();
-        vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
+        const int16_t v = static_cast<int16_t>(m_value.toInt());
+        vec.push_back(static_cast<uint16_t>(v));
         break;
     }
     case DataType::UDWord:
+    {
+        const quint32 v = m_value.toUInt();
+        vec = packDWordLowWordFirst(v);
+        break;
+    }
     case DataType::SDWord:
     {
-        const quint32 v = mValue.toUInt();
-        vec.push_back(static_cast<uint16_t>(v & 0xFFFFu));
-        vec.push_back(static_cast<uint16_t>(v >> 16));
+        const quint32 v = static_cast<quint32>(m_value.toInt());
+        vec = packDWordLowWordFirst(v);
         break;
     }
     case DataType::Float:
     {
-        vec = packFloatLowWordFirst(mValue.toFloat());
+        vec = packFloatLowWordFirst(m_value.toFloat());
         break;
     }
-
     default:
-
         break;
     }
 
-    mRowValue=vec;
+    m_rawValue = vec;
 }
 
-void Variable::setRowData(QVector<uint16_t> row)
+void Variable::setRawData(const QVector<uint16_t> &raw)
 {
-    mRowValue = row;
+    m_rawValue = raw;
     QVariant decoded;
     switch (m_type)
     {
     case DataType::Bit:
     {
-        decoded = (row.value(0) & 1u) != 0;
+        if (raw.size() >= 1)
+            decoded = (raw.value(0) & 1u) != 0;
         break;
     }
     case DataType::UWord:
     {
-        if (row.size()>=1)
-        {
-            decoded = row.value(0);
-        }
+        if (raw.size() >= 1)
+            decoded = raw.value(0);
         break;
     }
     case DataType::SWord:
     {
-        if (row.size()>=1)
-        {
-            decoded = int16_t(row.value(0));
-        }
+        if (raw.size() >= 1)
+            decoded = static_cast<int16_t>(raw.value(0));
         break;
     }
     case DataType::UDWord:
-        if (row.size() >= 2)
+    {
+        if (raw.size() >= 2)
         {
-            const uint32_t dw = (static_cast<uint32_t>(row[1]) << 16) | row[0];
+            const uint32_t dw = (static_cast<uint32_t>(raw[1]) << 16) | raw[0];
             decoded = dw;
         }
         break;
+    }
     case DataType::SDWord:
     {
-        if (row.size() >= 2)
+        if (raw.size() >= 2)
         {
-            const int32_t dw = (static_cast<int32_t>(row[1]) << 16) | row[0];
+            const int32_t dw = (static_cast<int32_t>(raw[1]) << 16) | raw[0];
             decoded = dw;
         }
         break;
     }
     case DataType::Float:
     {
-        if (row.size() >= 2)
-        {
-            decoded = unpackFloatLowWordFirst(row[0], row[1]);
-        }
+        if (raw.size() >= 2)
+            decoded = unpackFloatLowWordFirst(raw[0], raw[1]);
         break;
     }
     default:
         break;
-
     }
-    mValue = decoded;
-    emit valueChanged(mValue);
-
+    m_value = decoded;
+    emit valueChanged(m_value);
 }
-void Variable::setValue(QVariant val)
+
+void Variable::setValue(const QVariant &val)
 {
-    mValue = val;
-    emit valueChanged(mValue);
-    valueToRowValue();
-    emit rowValueChanged(mRowValue);
+    m_value = val;
+    emit valueChanged(m_value);
+    valueToRawValue();
+    emit rawValueChanged(m_rawValue);
 }
-
-

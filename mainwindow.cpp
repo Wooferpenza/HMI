@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "momentarybutton.h"
 #include "modbusmanager.h"
 #include "modbusmodel.h"
 #include "modbussettings.h"
@@ -25,8 +26,18 @@ struct VariableBinding {
 };
 
 const VariableBinding kVariableBindings[] = {
-    {"lineEdit", "Temp", 100, DataType::UWord, -65539, 655350, 2, true},
+    {"lineEdit", "Temp", 100, DataType::UWord, 0, 65535, 1, true},
     {"lineEditCounter", "Counter", 102, DataType::Float, -10.0f, 65535.0f, 2, true},
+};
+
+struct ButtonBinding {
+    const char *widgetName;
+    const char *varName;
+    quint16 address;
+};
+
+const ButtonBinding kButtonBindings[] = {
+    {"StartButton", "Start", 200},
 };
 
 } // namespace
@@ -53,14 +64,22 @@ MainWindow::MainWindow(QWidget *parent)
         auto *display = findChild<NumericDisplay *>(QLatin1String(b.widgetName));
         if (!display)
             continue;
-        display->variable.setName(QLatin1String(b.varName));
+        display->variable()->setName(QLatin1String(b.varName));
         if (b.hasVariableConfig) {
-            display->variable.setType(b.type);
-            display->variable.setMinimum(b.min);
-            display->variable.setMaximum(b.max);
-            display->variable.setFractional(static_cast<uint16_t>(b.fractional));
+            display->variable()->setType(b.type);
+            display->variable()->setMinimum(b.min);
+            display->variable()->setMaximum(b.max);
+            display->variable()->setFractional(static_cast<uint16_t>(b.fractional));
         }
-        model->addVar(&display->variable, b.address);
+        model->addVar(display->variable(), b.address);
+    }
+
+    for (const ButtonBinding &b : kButtonBindings) {
+        auto *btn = findChild<MomentaryButton *>(QLatin1String(b.widgetName));
+        if (!btn)
+            continue;
+        btn->variable()->setName(QLatin1String(b.varName));
+        model->addVar(btn->variable(), b.address);
     }
 
     manager = new ModbusManager(model, this);
@@ -69,6 +88,12 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(manager, &ModbusManager::lastError, this, [this](const QString &errorText) {
         ui->statusbar->showMessage(tr("Ошибка Modbus: %1").arg(errorText), 5000);
+    });
+    connect(manager, &ModbusManager::writeCompleted, this, [this](const QString &varName) {
+        ui->statusbar->showMessage(tr("Записано: %1").arg(varName), 3000);
+    });
+    connect(manager, &ModbusManager::writeFailed, this, [this](const QString &varName, const QString &err) {
+        ui->statusbar->showMessage(tr("Ошибка записи %1: %2").arg(varName, err), 5000);
     });
     manager->applySettings(modbusCfg);
 
@@ -84,8 +109,11 @@ void MainWindow::showNumPad()
 {
     auto *display = qobject_cast<NumericDisplay *>(sender());
     if (!display) return;
-    NumpadDialog npd(this,display->variable.type(),display->variable.minimum(),display->variable.maximum());
-    connect(&npd, &NumpadDialog::enter, display,&NumericDisplay::inputData);
+    NumpadDialog npd(this, display->variable()->type(),
+                     display->variable()->minimum(), display->variable()->maximum(),
+                     display->variable()->fractional());
+    npd.setCurrentValue(display->text());
+    connect(&npd, &NumpadDialog::enter, display, &NumericDisplay::inputData);
     npd.exec();
 }
 

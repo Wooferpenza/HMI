@@ -13,6 +13,7 @@ constexpr int kMinReconnectIntervalMs = 2000;
 constexpr int kModbusUnitIdMin = 1;
 constexpr int kModbusUnitIdMax = 247;
 constexpr int kMinPollIntervalMs = 50;
+constexpr uint16_t kMaxAddressGap = 4;
 
 } // namespace
 
@@ -64,7 +65,8 @@ void ModbusManager::connectTo(const QString &ip, int port) {
         m_client->disconnectDevice();
     m_client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, ip);
     m_client->setConnectionParameter(QModbusDevice::NetworkPortParameter, port);
-    m_client->connectDevice();
+    if (!m_client->connectDevice())
+        emit lastError(tr("Не удалось подключиться: %1").arg(m_client->errorString()));
 }
 
 void ModbusManager::applySettings(const ModbusSettings &settings)
@@ -72,6 +74,20 @@ void ModbusManager::applySettings(const ModbusSettings &settings)
     setUnitId(settings.unitId);
     setPollIntervalMs(settings.pollIntervalMs);
     connectTo(settings.ip, settings.port);
+}
+
+void ModbusManager::disconnectDevice()
+{
+    m_reconnectTimer->stop();
+    m_pollTimer->stop();
+    m_connectionIp.clear();
+    if (m_client->state() != QModbusDevice::UnconnectedState)
+        m_client->disconnectDevice();
+}
+
+void ModbusManager::stopPolling()
+{
+    m_pollTimer->stop();
 }
 
 void ModbusManager::onClientStateChanged(QModbusDevice::State state)
@@ -102,7 +118,8 @@ void ModbusManager::tryReconnect()
     emit connectionStateChanged(tr("Переподключение..."));
     m_client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, m_connectionIp);
     m_client->setConnectionParameter(QModbusDevice::NetworkPortParameter, m_connectionPort);
-    m_client->connectDevice();
+    if (!m_client->connectDevice())
+        emit lastError(tr("Переподключение не удалось: %1").arg(m_client->errorString()));
 }
 
 void ModbusManager::triggerPoll() {
@@ -112,8 +129,8 @@ void ModbusManager::triggerPoll() {
     if (m_model->variableCount() == 0)
         return;
 
-    // Копируем переменные в локальный список и сортируем по адресу,
-    // чтобы группировка диапазонов регистров была корректной.
+    clearPendingReads();
+
     QVector<const ModbusVar*> vars;
     vars.reserve(m_model->variableCount());
     for (int i = 0; i < m_model->variableCount(); ++i) {
@@ -130,41 +147,38 @@ void ModbusManager::triggerPoll() {
         return a->address < b->address;
     });
 
-    // Группируем переменные в непрерывные диапазоны адресов,
-    // чтобы уменьшить количество Modbus-запросов.
     int i = 0;
     while (i < vars.size()) {
         const ModbusVar *first = vars.at(i);
         uint16_t start = first->address;
-        uint16_t count = first->size;
+        uint16_t end = static_cast<uint16_t>(start + first->size);
 
         int j = i + 1;
         while (j < vars.size()) {
             const ModbusVar *next = vars.at(j);
-            uint16_t nextStart = next->address;
-            uint16_t nextCount = next->size;
-
-            // Если следующий регистр начинается сразу после текущего диапазона — расширяем диапазон.
-            if (nextStart == static_cast<uint16_t>(start + count)) {
-                count = static_cast<uint16_t>(count + nextCount);
+            const uint16_t nextEnd = static_cast<uint16_t>(next->address + next->size);
+            if (next->address <= end + kMaxAddressGap) {
+                if (nextEnd > end)
+                    end = nextEnd;
                 ++j;
             } else {
                 break;
             }
         }
 
-        m_queue.enqueue({ModbusRequest::Read, start, count, {}});
+        const uint16_t count = static_cast<uint16_t>(end - start);
+        m_queue.enqueue({ModbusRequest::Read, start, count, {}, {}});
         i = j;
     }
 
     processQueue();
 }
 
-void ModbusManager::writeVariable(const QString &name, QVector<uint16_t> value) {
+void ModbusManager::writeVariable(const QString &name, const QVector<uint16_t> &value) {
     const ModbusVar *var = m_model->findVariable(name);
     if (!var)
         return;
-    m_queue.prepend({ModbusRequest::Write, var->address, var->size, value});
+    m_queue.prepend({ModbusRequest::Write, var->address, var->size, value, name});
     processQueue();
 }
 
@@ -173,6 +187,7 @@ void ModbusManager::processQueue() {
     m_busy = true;
     auto req = m_queue.dequeue();
     m_inFlightType = req.type;
+    m_inFlightName = req.name;
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, req.startAddress, req.count);
 
     QModbusReply *reply = nullptr;
@@ -200,10 +215,15 @@ void ModbusManager::onReplyFinished() {
         if (reply->error() == QModbusDevice::NoError) {
             if (m_inFlightType == ModbusRequest::Read) {
                 parseReadData(reply->result());
+            } else {
+                emit writeCompleted(m_inFlightName);
             }
         } else {
             const QString err = reply->errorString();
-            emit lastError(err);
+            if (m_inFlightType == ModbusRequest::Write)
+                emit writeFailed(m_inFlightName, err);
+            else
+                emit lastError(err);
         }
         reply->deleteLater();
     }
@@ -212,29 +232,32 @@ void ModbusManager::onReplyFinished() {
     processQueue();
 }
 
+void ModbusManager::clearPendingReads() {
+    QQueue<ModbusRequest> kept;
+    while (!m_queue.isEmpty()) {
+        auto req = m_queue.dequeue();
+        if (req.type != ModbusRequest::Read)
+            kept.enqueue(std::move(req));
+    }
+    m_queue = std::move(kept);
+}
+
 void ModbusManager::parseReadData(const QModbusDataUnit &res) {
-    for (int i = 0; i < m_model->variableCount(); ++i) {
-        const ModbusVar *v = m_model->variableAt(i);
-        if (!v) continue;
-        uint16_t start = res.startAddress();
-        uint16_t valuesCount = static_cast<uint16_t>(res.valueCount());
+    const uint16_t start = static_cast<uint16_t>(res.startAddress());
+    const uint16_t valuesCount = static_cast<uint16_t>(res.valueCount());
 
-        if (v->address < start || v->address >= static_cast<uint16_t>(start + valuesCount))
-            continue;
-
-        uint16_t offset = static_cast<uint16_t>(v->address - start);
+    const auto vars = m_model->variablesInRange(start, valuesCount);
+    for (const ModbusVar *v : vars) {
+        const uint16_t offset = static_cast<uint16_t>(v->address - start);
         const uint16_t endIndex = static_cast<uint16_t>(offset + v->size);
-        if (endIndex > valuesCount || endIndex < offset)
+        if (endIndex > valuesCount)
             continue;
 
         QVector<uint16_t> val;
+        val.reserve(v->size);
         for (int j = 0; j < v->size; ++j)
-        {
-            val.push_back(res.value(offset + j));
-        }
+            val.append(res.value(offset + j));
 
         m_model->updateVariable(v->name, val);
     }
-
-
 }

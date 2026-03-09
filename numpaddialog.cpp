@@ -3,9 +3,10 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QString>
+#include <cmath>
 #include "ui_numpaddialog.h"
 
-NumpadDialog::NumpadDialog(QWidget *parent, DataType type, float min, float max)
+NumpadDialog::NumpadDialog(QWidget *parent, DataType type, float min, float max, uint16_t fractional)
     : QDialog(parent)
     , ui(new Ui::NumpadDialog)
 {
@@ -15,6 +16,7 @@ NumpadDialog::NumpadDialog(QWidget *parent, DataType type, float min, float max)
     for (auto *btn : buttons) {
         if (!btn)
             continue;
+        btn->setFocusPolicy(Qt::NoFocus);
         if (numberButtonRe.match(btn->objectName()).hasMatch())
             connect(btn, &QPushButton::clicked, this, &NumpadDialog::handleNumberButton);
     }
@@ -25,7 +27,9 @@ NumpadDialog::NumpadDialog(QWidget *parent, DataType type, float min, float max)
     connect(ui->pushButtonRight, &QPushButton::clicked, this, &NumpadDialog::handleRightButton);
     connect(ui->pushButtonPlusMinus, &QPushButton::clicked, this, &NumpadDialog::handleMinusButton);
     connect(ui->pushButtonENT, &QPushButton::clicked, this, &NumpadDialog::handleEnterButton);
-    setType(type); setRange(min,max);
+    setType(type);
+    setFractional(fractional);
+    setRange(min, max);
 }
 
 
@@ -37,14 +41,26 @@ NumpadDialog::~NumpadDialog()
 
 void NumpadDialog::setRange(float min, float max)
 {
-    mMinimum = min;
-    mMaximum = max;
-    ui->label->setText(QString::number(mMinimum) + " ~ " + QString::number(mMaximum));
+    m_minimum = min;
+    m_maximum = max;
+    ui->label->setText(QString::number(m_minimum) + " ~ " + QString::number(m_maximum));
 }
 
 void NumpadDialog::setType(DataType type)
 {
-    mType=type;
+    m_type = type;
+}
+
+void NumpadDialog::setFractional(uint16_t frac)
+{
+    m_fractional = frac;
+}
+
+void NumpadDialog::setCurrentValue(const QString &text)
+{
+    ui->lineEdit->setText(text);
+    ui->lineEdit->selectAll();
+    ui->lineEdit->setFocus();
 }
 
 void NumpadDialog::handleNumberButton()
@@ -68,13 +84,11 @@ void NumpadDialog::handleDeleteButton()
 void NumpadDialog::handleLeftButton()
 {
     ui->lineEdit->cursorBackward(false, 1);
-    ui->lineEdit->setFocus();
 }
 
 void NumpadDialog::handleRightButton()
 {
     ui->lineEdit->cursorForward(false, 1);
-    ui->lineEdit->setFocus();
 }
 
 void NumpadDialog::handleMinusButton()
@@ -92,45 +106,62 @@ void NumpadDialog::handleEnterButton()
     const QString resultStr = ui->lineEdit->text().trimmed();
     bool ok = false;
     QVariant result;
-    switch (mType)
+    const bool intWithFrac = m_fractional > 0
+        && m_type != DataType::Float
+        && m_type != DataType::Bit;
+
+    switch (m_type)
     {
+    case DataType::Bit:
+        if (resultStr == QLatin1String("0") || resultStr == QLatin1String("1")) {
+            result = (resultStr == QLatin1String("1"));
+            ok = true;
+        }
+        break;
     case DataType::Float:
-    {
         result = resultStr.toFloat(&ok);
         break;
-    }
     case DataType::UWord:
-    {
-        result = resultStr.toUShort(&ok);
-        break;
-    }
     case DataType::SWord:
-    {
-        result = resultStr.toShort(&ok);
-        break;
-    }
     case DataType::UDWord:
-    {
-        result = resultStr.toUInt(&ok);
-        break;
-    }
     case DataType::SDWord:
-    {
-        result = resultStr.toInt(&ok);
+        if (intWithFrac) {
+            const double entered = resultStr.toDouble(&ok);
+            if (ok) {
+                const double scale = std::pow(10.0, m_fractional);
+                const long long raw = static_cast<long long>(std::round(entered * scale));
+                result = static_cast<int>(raw);
+            }
+        } else {
+            switch (m_type) {
+            case DataType::UWord:  result = resultStr.toUShort(&ok); break;
+            case DataType::SWord:  result = resultStr.toShort(&ok);  break;
+            case DataType::UDWord: result = resultStr.toUInt(&ok);   break;
+            case DataType::SDWord: result = resultStr.toInt(&ok);    break;
+            default: break;
+            }
+        }
+        break;
+    default:
         break;
     }
-        default:
-        break;
-    }
+
     if (!ok || resultStr.isEmpty()) {
-        QMessageBox::warning(this, "Ошибка", "Введите число");
+        const QString msg = (m_type == DataType::Bit)
+            ? tr("Введите 0 или 1")
+            : tr("Введите число");
+        QMessageBox::warning(this, tr("Ошибка"), msg);
         return;
     }
-    if ((result.toFloat() < mMinimum) || (result.toFloat() > mMaximum)) {
-        QMessageBox::warning(this, "Ошибка", "Значение вне диапазона");
+
+    const float displayValue = intWithFrac
+        ? static_cast<float>(result.toInt() / std::pow(10.0, m_fractional))
+        : result.toFloat();
+
+    if (displayValue < m_minimum || displayValue > m_maximum) {
+        QMessageBox::warning(this, tr("Ошибка"), tr("Значение вне диапазона"));
     } else {
         emit enter(result);
-
         close();
     }
 }

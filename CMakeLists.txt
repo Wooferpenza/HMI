@@ -17,26 +17,32 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        modbussettingsdialog.h
-        modbussettingsdialog.cpp
-        modbussettingsdialog.ui
-        numpaddialog.h
-        numpaddialog.cpp
-        numpaddialog.ui
-        numericdisplay.h
-        numericdisplay.cpp
+        variable.h
+        variable.cpp
+        registerutils.h
         modbuscommon.h
         modbusmanager.h
         modbusmanager.cpp
         modbusmodel.h
         modbusmodel.cpp
+        modbussettings.h
+        modbussettings.cpp
+        modbussettingsdialog.h
+        modbussettingsdialog.cpp
+        modbussettingsdialog.ui
+        numericdisplay.h
+        numericdisplay.cpp
+        momentarybutton.h
+        momentarybutton.cpp
+        numpaddialog.h
+        numpaddialog.cpp
+        numpaddialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(HMI
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        variable.h variable.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET HMI APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

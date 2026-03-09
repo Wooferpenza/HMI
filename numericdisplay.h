@@ -3,28 +3,28 @@
 
 #include <QLineEdit>
 #include <QMouseEvent>
-#include <QObject>
 #include <QVariant>
 #include "variable.h"
+
 class NumericDisplay : public QLineEdit
 {
     Q_OBJECT
 public:
-    NumericDisplay(QWidget *parent = nullptr);
-    Variable variable;
+    explicit NumericDisplay(QWidget *parent = nullptr);
+    Variable *variable() const;
+
 signals:
     void clicked();
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override
-    {
-        QLineEdit::mousePressEvent(event); // Вызываем стандартную обработку
-        emit clicked();                    // Испускаем сигнал
-    }
-public slots:
-    void inputData(QVariant data);
-    void  displayData(QVariant);
+    void mousePressEvent(QMouseEvent *event) override;
 
+public slots:
+    void inputData(const QVariant &data);
+    void displayData(const QVariant &val);
+
+private:
+    Variable *m_variable = nullptr;
 };
 
 #endif // NUMERICDISPLAY_H

@@ -2,7 +2,7 @@
 #define NUMPADDIALOG_H
 
 #include <QDialog>
-#include "variable.h"
+#include "modbuscommon.h"
 namespace Ui {
 class NumpadDialog;
 }
@@ -12,14 +12,17 @@ class NumpadDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit   NumpadDialog(QWidget *parent = nullptr,DataType type=DataType::UWord,float min=0, float max=100);
-    ~NumpadDialog();
+    explicit NumpadDialog(QWidget *parent = nullptr, DataType type = DataType::UWord,
+                          float min = 0, float max = 100, uint16_t fractional = 0);
+    ~NumpadDialog() override;
     void setRange(float min, float max);
-    void setType(DataType);
+    void setType(DataType type);
+    void setFractional(uint16_t frac);
+    void setCurrentValue(const QString &text);
+
 signals:
-    void enterInt(int);
-    void enterFloat(float);
-    void enter(QVariant);
+    void enter(const QVariant &value);
+
 private slots:
     void handleNumberButton();
     void handleClearButton();
@@ -31,9 +34,10 @@ private slots:
 
 private:
     Ui::NumpadDialog *ui;
-    float mMinimum;
-    float mMaximum;
-    DataType mType;
+    float m_minimum;
+    float m_maximum;
+    DataType m_type;
+    uint16_t m_fractional = 0;
 };
 
 #endif // NUMPADDIALOG_H

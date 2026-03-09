@@ -3,19 +3,15 @@
 
 #include <QObject>
 #include <QString>
-#include <QVariant>
 #include <QVector>
 #include <cstdint>
-#include <cstring>
 
-namespace ModbusUtils {
-
-} // namespace ModbusUtils
+enum class DataType { Bit, UWord, SWord, UDWord, SDWord, Float };
 
 class ModbusVar : public QObject {
     Q_OBJECT
 public:
-    explicit ModbusVar(const QString &nam, uint16_t addr, size_t sz, QObject *parent = nullptr)
+    explicit ModbusVar(const QString &nam, uint16_t addr, uint16_t sz, QObject *parent = nullptr)
         : QObject(parent), name(nam), address(addr), size(sz)
     {
         value.resize(size);
@@ -25,7 +21,7 @@ public:
     uint16_t size;
     QVector<uint16_t> value;
 signals:
-    void valueChanged(const  QVector<uint16_t> &value);
+    void valueChanged(const QVector<uint16_t> &value);
 };
 
 struct ModbusRequest {
@@ -33,6 +29,7 @@ struct ModbusRequest {
     uint16_t startAddress;
     uint16_t count;
     QVector<uint16_t> data;
+    QString name;
 };
 
 #endif
