@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "momentarybutton.h"
 #include "modbusmanager.h"
+#include "togglebutton.h"
 #include "modbusmodel.h"
 #include "modbussettings.h"
 #include "modbussettingsdialog.h"
@@ -40,6 +41,10 @@ const ButtonBinding kButtonBindings[] = {
     {"StartButton", "Start", 200},
 };
 
+const ButtonBinding kToggleBindings[] = {
+    {"toggleButtonEnable", "Enable", 200},
+};
+
 } // namespace
 
 MainWindow::MainWindow(QWidget *parent)
@@ -76,6 +81,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (const ButtonBinding &b : kButtonBindings) {
         auto *btn = findChild<MomentaryButton *>(QLatin1String(b.widgetName));
+        if (!btn)
+            continue;
+        btn->variable()->setName(QLatin1String(b.varName));
+        model->addVar(btn->variable(), b.address);
+    }
+
+    for (const ButtonBinding &b : kToggleBindings) {
+        auto *btn = findChild<ToggleButton *>(QLatin1String(b.widgetName));
         if (!btn)
             continue;
         btn->variable()->setName(QLatin1String(b.varName));

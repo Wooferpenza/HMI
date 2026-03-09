@@ -34,6 +34,8 @@ set(PROJECT_SOURCES
         numericdisplay.cpp
         momentarybutton.h
         momentarybutton.cpp
+        togglebutton.h
+        togglebutton.cpp
         numpaddialog.h
         numpaddialog.cpp
         numpaddialog.ui
