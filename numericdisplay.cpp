@@ -16,7 +16,8 @@ Variable *NumericDisplay::variable() const
 void NumericDisplay::mousePressEvent(QMouseEvent *event)
 {
     QLineEdit::mousePressEvent(event);
-    emit clicked();
+    if (!isReadOnly())
+        emit clicked();
 }
 
 void NumericDisplay::inputData(const QVariant &data)

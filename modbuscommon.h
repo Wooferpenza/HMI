@@ -4,9 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
-#include <cstdint>
-
-enum class DataType { Bit, UWord, SWord, UDWord, SDWord, Float };
+//#include <cstdint>
 
 class ModbusVar : public QObject {
     Q_OBJECT

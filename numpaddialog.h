@@ -2,7 +2,7 @@
 #define NUMPADDIALOG_H
 
 #include <QDialog>
-#include "modbuscommon.h"
+#include "variable.h"
 namespace Ui {
 class NumpadDialog;
 }

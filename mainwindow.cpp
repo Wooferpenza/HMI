@@ -8,7 +8,7 @@
 #include "numericdisplay.h"
 #include "numpaddialog.h"
 #include "ui_mainwindow.h"
-#include "variable.h"
+//#include "variable.h"
 #include <QSettings>
 
 namespace {
@@ -22,28 +22,35 @@ struct VariableBinding {
     DataType type = DataType::UWord;
     float min = 0.0f;
     float max = 100.0f;
-    int fractional = 0;
-    bool hasVariableConfig = false; // true — применить type/min/max/fractional
+    uint fractional = 0;
+    bool readOnly = false;
 };
 
 const VariableBinding kVariableBindings[] = {
-    {"lineEdit", "Temp", 100, DataType::UWord, 0, 65535, 1, true},
-    {"lineEditCounter", "Counter", 102, DataType::Float, -10.0f, 65535.0f, 2, true},
-};
+    {"lineEdit", "Temp", 100, DataType::UWord, 0, 65535, 1,  false},
+    {"lineEditCounter", "Counter", 102, DataType::Float, -10.0f, 65535.0f, 2,  false},
+    {"xAbsDisplay", "xAbs", 104, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"xRelDisplay", "xRel", 106, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"yAbsDisplay", "yAbs", 108, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"yRelDisplay", "yRel", 110, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    };
 
 struct ButtonBinding {
     const char *widgetName;
     const char *varName;
     quint16 address;
+    uint16_t bitIndex = 0;
 };
 
 const ButtonBinding kButtonBindings[] = {
-    {"StartButton", "Start", 200},
-};
+    {"StartButton", "Start", 200, 0},
+    {"xRstButton", "xRst", 200, 1},
+    {"yRstButton", "yRst", 200, 2},
+    };
 
 const ButtonBinding kToggleBindings[] = {
-    {"toggleButtonEnable", "Enable", 200},
-};
+    {"toggleButtonEnable", "Enable", 200, 1},
+    };
 
 } // namespace
 
@@ -62,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSettings s;
     ModbusSettings modbusCfg = ModbusSettings::load(s);
-
     model = new ModbusModel(this);
 
     for (const VariableBinding &b : kVariableBindings) {
@@ -70,12 +76,11 @@ MainWindow::MainWindow(QWidget *parent)
         if (!display)
             continue;
         display->variable()->setName(QLatin1String(b.varName));
-        if (b.hasVariableConfig) {
-            display->variable()->setType(b.type);
-            display->variable()->setMinimum(b.min);
-            display->variable()->setMaximum(b.max);
-            display->variable()->setFractional(static_cast<uint16_t>(b.fractional));
-        }
+        display->variable()->setType(b.type);
+        display->variable()->setMinimum(b.min);
+        display->variable()->setMaximum(b.max);
+        display->variable()->setFractional(b.fractional);
+        display->setReadOnly(b.readOnly);
         model->addVar(display->variable(), b.address);
     }
 
@@ -84,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (!btn)
             continue;
         btn->variable()->setName(QLatin1String(b.varName));
+        btn->variable()->setBitIndex(b.bitIndex);
         model->addVar(btn->variable(), b.address);
     }
 
@@ -92,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (!btn)
             continue;
         btn->variable()->setName(QLatin1String(b.varName));
+        btn->variable()->setBitIndex(b.bitIndex);
         model->addVar(btn->variable(), b.address);
     }
 

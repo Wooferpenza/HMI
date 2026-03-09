@@ -4,25 +4,29 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector>
-#include "modbuscommon.h"
-#include "registerutils.h"
-
+enum  DataType { Bit, UWord, SWord, UDWord, SDWord, Float };
 class Variable : public QObject
 {
+
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(DataType type READ type WRITE setType NOTIFY typeChanged FINAL)
 
+    Q_PROPERTY(uint16_t bitIndex READ bitIndex WRITE setBitIndex NOTIFY bitIndexChanged FINAL)
     Q_PROPERTY(uint16_t fractional READ fractional WRITE setFractional NOTIFY fractionalChanged FINAL)
     Q_PROPERTY(float minimum READ minimum WRITE setMinimum NOTIFY minimumChanged FINAL)
     Q_PROPERTY(float maximum READ maximum WRITE setMaximum NOTIFY maximumChanged FINAL)
 public:
+
     explicit Variable(QObject *parent = nullptr);
 
     DataType type() const;
     void setType(DataType newType);
     QString name() const;
     void setName(const QString &newName);
+
+    uint16_t bitIndex() const;
+    void setBitIndex(uint16_t newBitIndex);
 
     uint16_t fractional() const;
     void setFractional(uint16_t newFractional);
@@ -38,6 +42,7 @@ public:
 signals:
     void typeChanged();
     void nameChanged();
+    void bitIndexChanged();
     void fractionalChanged();
 
     void minimumChanged();
@@ -50,6 +55,7 @@ signals:
 private:
     DataType m_type = DataType::UWord;
     QString m_name;
+    uint16_t m_bitIndex = 0;
     uint16_t m_fractional = 0;
     float m_minimum = 0.0;
     float m_maximum = 100.0;

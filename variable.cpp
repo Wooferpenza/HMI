@@ -1,5 +1,5 @@
 #include "variable.h"
-
+#include "registerutils.h"
 Variable::Variable(QObject *parent)
     : QObject{parent}
 {}
@@ -40,6 +40,21 @@ void Variable::setName(const QString &newName)
         return;
     m_name = newName;
     emit nameChanged();
+}
+
+uint16_t Variable::bitIndex() const
+{
+    return m_bitIndex;
+}
+
+void Variable::setBitIndex(uint16_t newBitIndex)
+{
+    if (newBitIndex > 15)
+        newBitIndex = 15;
+    if (m_bitIndex == newBitIndex)
+        return;
+    m_bitIndex = newBitIndex;
+    emit bitIndexChanged();
 }
 
 uint16_t Variable::fractional() const
@@ -91,6 +106,16 @@ void Variable::valueToRawValue()
     QVector<uint16_t> vec;
     switch (m_type) {
     case DataType::Bit:
+    {
+        uint16_t word = m_rawValue.value(0, 0);
+        const uint16_t mask = static_cast<uint16_t>(1u << m_bitIndex);
+        if (m_value.toBool())
+            word |= mask;
+        else
+            word &= ~mask;
+        vec.push_back(word);
+        break;
+    }
     case DataType::UWord:
     {
         const uint32_t v = m_value.toUInt();
@@ -136,7 +161,7 @@ void Variable::setRawData(const QVector<uint16_t> &raw)
     case DataType::Bit:
     {
         if (raw.size() >= 1)
-            decoded = (raw.value(0) & 1u) != 0;
+            decoded = (raw.value(0) >> m_bitIndex & 1u) != 0;
         break;
     }
     case DataType::UWord:
