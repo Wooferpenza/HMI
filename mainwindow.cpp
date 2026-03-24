@@ -2,6 +2,7 @@
 #include "momentarybutton.h"
 #include "modbusmanager.h"
 #include "togglebutton.h"
+#include "multistatebutton.h"
 #include "modbusmodel.h"
 #include "modbussettings.h"
 #include "modbussettingsdialog.h"
@@ -52,6 +53,16 @@ const ButtonBinding kToggleBindings[] = {
     {"toggleButtonEnable", "Enable", 200, 1},
     };
 
+struct MultiStateBinding {
+    const char *widgetName;
+    const char *varName;
+    quint16 address;
+};
+
+const MultiStateBinding kMultiStateBindings[] = {
+    {"multiStateMode", "Mode", 202},
+};
+
 } // namespace
 
 MainWindow::MainWindow(QWidget *parent)
@@ -99,6 +110,17 @@ MainWindow::MainWindow(QWidget *parent)
             continue;
         btn->variable()->setName(QLatin1String(b.varName));
         btn->variable()->setBitIndex(b.bitIndex);
+        model->addVar(btn->variable(), b.address);
+    }
+
+    for (const MultiStateBinding &b : kMultiStateBindings) {
+        auto *btn = findChild<MultiStateButton *>(QLatin1String(b.widgetName));
+        if (!btn)
+            continue;
+        btn->variable()->setName(QLatin1String(b.varName));
+        btn->variable()->setType(DataType::UWord);
+        btn->variable()->setMinimum(0.0f);
+        btn->variable()->setMaximum(static_cast<float>(btn->stateCount() - 1));
         model->addVar(btn->variable(), b.address);
     }
 
