@@ -10,6 +10,7 @@
 #include "numpaddialog.h"
 #include "ui_mainwindow.h"
 //#include "variable.h"
+#include <QButtonGroup>
 #include <QSettings>
 
 namespace {
@@ -70,6 +71,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    auto *navGroup = new QButtonGroup(this);
+    navGroup->setExclusive(true);
+    navGroup->addButton(ui->navButtonOverview, 0);
+    navGroup->addButton(ui->navButtonJournal, 1);
+    navGroup->addButton(ui->navButtonService, 2);
+    connect(navGroup, &QButtonGroup::idClicked,
+            ui->stackedWidgetPages, &QStackedWidget::setCurrentIndex);
+    connect(ui->stackedWidgetPages, &QStackedWidget::currentChanged,
+            this, [navGroup](int index) {
+        if (QAbstractButton *b = navGroup->button(index)) {
+            if (!b->isChecked())
+                b->setChecked(true);
+        }
+    });
 
     const auto displays = findChildren<NumericDisplay*>();
     for (NumericDisplay *display : displays) {
