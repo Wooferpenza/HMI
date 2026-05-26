@@ -107,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent)
         display->variable()->setMinimum(b.min);
         display->variable()->setMaximum(b.max);
         display->variable()->setFractional(b.fractional);
-        display->setReadOnly(b.readOnly);
+       // display->setReadOnly(b.readOnly);
         model->addVar(display->variable(), b.address);
     }
 

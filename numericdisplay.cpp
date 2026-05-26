@@ -63,3 +63,13 @@ void NumericDisplay::displayData(const QVariant &val)
 
     setText(text);
 }
+
+bool NumericDisplay::isReadOnly() const
+{
+    return m_readOnly;
+}
+
+void NumericDisplay::setReadOnly(bool newReadOnly)
+{
+    m_readOnly = newReadOnly;
+}

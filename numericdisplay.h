@@ -9,9 +9,13 @@
 class NumericDisplay : public QLineEdit
 {
     Q_OBJECT
+    Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly FINAL)
 public:
     explicit NumericDisplay(QWidget *parent = nullptr);
     Variable *variable() const;
+
+    bool isReadOnly() const;
+    void setReadOnly(bool newReadOnly);
 
 signals:
     void clicked();
@@ -25,6 +29,7 @@ public slots:
 
 private:
     Variable *m_variable = nullptr;
+    bool m_readOnly;
 };
 
 #endif // NUMERICDISPLAY_H

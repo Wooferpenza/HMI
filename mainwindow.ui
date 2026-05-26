@@ -10,6 +10,18 @@
     <height>768</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1024</width>
+    <height>768</height>
+   </size>
+  </property>
   <property name="contextMenuPolicy">
    <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
   </property>
@@ -111,7 +123,7 @@
          <enum>Qt::FocusPolicy::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Журнал</string>
+         <string>Настройки</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -226,7 +238,7 @@
            <set>Qt::AlignmentFlag::AlignCenter</set>
           </property>
           <property name="readOnly">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
          <widget class="NumericDisplay" name="lineEditCounter">
@@ -293,7 +305,7 @@
            <rect>
             <x>10</x>
             <y>490</y>
-            <width>501</width>
+            <width>460</width>
             <height>221</height>
            </rect>
           </property>
@@ -465,6 +477,9 @@
                <property name="readOnly">
                 <bool>true</bool>
                </property>
+               <property name="123" stdset="0">
+                <string/>
+               </property>
               </widget>
              </item>
              <item row="5" column="2">
@@ -633,7 +648,7 @@
          <widget class="QGroupBox" name="CoordinateBox_2">
           <property name="geometry">
            <rect>
-            <x>520</x>
+            <x>490</x>
             <y>490</y>
             <width>380</width>
             <height>221</height>
@@ -678,11 +693,7 @@
                 <number>0</number>
                </property>
                <property name="stateIconPaths" stdset="0">
-                <stringlist>
-                 <string></string>
-                 <string></string>
-                 <string></string>
-                </stringlist>
+                <stringlist/>
                </property>
                <property name="stateTexts" stdset="0">
                 <stringlist>
@@ -858,7 +869,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">
