@@ -4,7 +4,6 @@
 #include <QModbusReply>
 #include <QModbusDataUnit>
 #include <QtCore/QtNumeric>
-#include <algorithm>
 
 namespace {
 
@@ -131,21 +130,7 @@ void ModbusManager::triggerPoll() {
 
     clearPendingReads();
 
-    QVector<const ModbusVar*> vars;
-    vars.reserve(m_model->variableCount());
-    for (int i = 0; i < m_model->variableCount(); ++i) {
-        const ModbusVar *v = m_model->variableAt(i);
-        if (!v)
-            continue;
-        vars.append(v);
-    }
-
-    if (vars.isEmpty())
-        return;
-
-    std::sort(vars.begin(), vars.end(), [](const ModbusVar *a, const ModbusVar *b) {
-        return a->address < b->address;
-    });
+    QList<ModbusVar *> &vars = m_model->readTable();
 
     int i = 0;
     while (i < vars.size()) {

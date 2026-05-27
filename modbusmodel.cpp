@@ -8,6 +8,7 @@ ModbusVar *ModbusModel::addVar(const QString &name, uint16_t address, uint16_t s
 {
     auto *var = new ModbusVar(name, address, size, this);
     m_readTable.append(var);
+    sortReadTable();
     return var;
 }
 
@@ -37,8 +38,17 @@ void ModbusModel::updateVariable( ModbusVar *var, const QVector<uint16_t> &val)
     emit var->valueChanged(val);
 }
 
-ModbusVar *ModbusModel::findVariable(const QString &name) const
+QList<ModbusVar *> &ModbusModel::readTable()
 {
-    //return m_varsByName.value(name, nullptr);
+    if (m_readTable.size())
+    return m_readTable;
 }
+
+void ModbusModel::sortReadTable()
+{
+    std::sort(m_readTable.begin(), m_readTable.end(), [](const ModbusVar *a, const ModbusVar *b) {
+        return a->address < b->address;
+    });
+}
+
 

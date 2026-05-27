@@ -8,6 +8,7 @@
 class MultiStateButton : public QPushButton
 {
     Q_OBJECT
+    Q_PROPERTY(Variable *variable READ variable FINAL)
     Q_PROPERTY(int stateCount READ stateCount WRITE setStateCount NOTIFY stateCountChanged FINAL)
     Q_PROPERTY(QStringList stateIconPaths READ stateIconPaths WRITE setStateIconPaths NOTIFY stateIconPathsChanged FINAL)
     Q_PROPERTY(QStringList stateTexts READ stateTexts WRITE setStateTexts NOTIFY stateTextsChanged FINAL)

@@ -7,6 +7,7 @@
 class MomentaryButton : public QPushButton
 {
     Q_OBJECT
+    Q_PROPERTY(Variable *variable READ variable FINAL)
 public:
     explicit MomentaryButton(QWidget *parent = nullptr);
     Variable *variable() const;

@@ -8,6 +8,7 @@
 class ToggleButton : public QPushButton
 {
     Q_OBJECT
+    Q_PROPERTY(Variable *variable READ variable FINAL)
     Q_PROPERTY(QStringList stateTexts READ stateTexts WRITE setStateTexts NOTIFY stateTextsChanged FINAL)
     Q_PROPERTY(QString stateTextFallback READ stateTextFallback WRITE setStateTextFallback NOTIFY stateTextFallbackChanged FINAL)
 

@@ -208,7 +208,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidgetPages">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="pageOverview">
          <widget class="NumericDisplay" name="lineEdit">
@@ -814,7 +814,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Журнал событий — в разработке</string>
+             <string>Настройки — в разработке</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -869,7 +869,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">

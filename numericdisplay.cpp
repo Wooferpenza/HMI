@@ -73,3 +73,6 @@ void NumericDisplay::setReadOnly(bool newReadOnly)
 {
     m_readOnly = newReadOnly;
 }
+
+
+

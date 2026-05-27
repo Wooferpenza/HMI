@@ -42,19 +42,19 @@ void Variable::setName(const QString &newName)
     emit nameChanged();
 }
 
-uint16_t Variable::bitIndex() const
+uint16_t Variable::readAddressBit() const
 {
-    return m_bitIndex;
+    return m_readAddressBit;
 }
 
-void Variable::setBitIndex(uint16_t newBitIndex)
+void Variable::setReadAddressBit(uint16_t newBitIndex)
 {
     if (newBitIndex > 15)
         newBitIndex = 15;
-    if (m_bitIndex == newBitIndex)
+    if (m_readAddressBit == newBitIndex)
         return;
-    m_bitIndex = newBitIndex;
-    emit bitIndexChanged();
+    m_readAddressBit = newBitIndex;
+    emit readAddressBitChanged();
 }
 
 uint16_t Variable::fractional() const
@@ -108,7 +108,7 @@ void Variable::valueToRawValue()
     case DataType::Bit:
     {
         uint16_t word = m_rawValue.value(0, 0);
-        const uint16_t mask = static_cast<uint16_t>(1u << m_bitIndex);
+        const uint16_t mask = static_cast<uint16_t>(1u << m_readAddressBit);
         if (m_value.toBool())
             word |= mask;
         else
@@ -161,7 +161,7 @@ void Variable::setRawData(const QVector<uint16_t> &raw)
     case DataType::Bit:
     {
         if (raw.size() >= 1)
-            decoded = (raw.value(0) >> m_bitIndex & 1u) != 0;
+            decoded = (raw.value(0) >> m_readAddressBit & 1u) != 0;
         break;
     }
     case DataType::UWord:
@@ -213,4 +213,43 @@ void Variable::setValue(const QVariant &val)
     emit valueChanged(m_value);
     valueToRawValue();
     emit rawValueChanged(m_rawValue);
+}
+
+uint16_t Variable::writeAddress() const
+{
+    return m_writeAddress;
+}
+
+void Variable::setWriteAddress(uint16_t newWriteAddress)
+{
+    if (m_writeAddress == newWriteAddress)
+        return;
+    m_writeAddress = newWriteAddress;
+    emit writeAddressChanged();
+}
+
+uint16_t Variable::writeAddressBit() const
+{
+    return m_writeAddressBit;
+}
+
+void Variable::setWriteAddressBit(uint16_t newWriteAddressBit)
+{
+    if (m_writeAddressBit == newWriteAddressBit)
+        return;
+    m_writeAddressBit = newWriteAddressBit;
+    emit writeAddressBitChanged();
+}
+
+uint16_t Variable::readAddress() const
+{
+    return m_readAddress;
+}
+
+void Variable::setReadAddress(uint16_t newReadAddress)
+{
+    if (m_readAddress == newReadAddress)
+        return;
+    m_readAddress = newReadAddress;
+    emit readAddressChanged();
 }

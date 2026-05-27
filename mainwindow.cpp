@@ -9,7 +9,6 @@
 #include "numericdisplay.h"
 #include "numpaddialog.h"
 #include "ui_mainwindow.h"
-//#include "variable.h"
 #include <QButtonGroup>
 #include <QSettings>
 
@@ -19,7 +18,6 @@ namespace {
 // Опционально: тип, формат, лимиты — задаются только если нужны не по умолчанию.
 struct VariableBinding {
     const char *widgetName;
-    const char *varName;
     quint16 address;
     DataType type = DataType::UWord;
     float min = 0.0f;
@@ -29,30 +27,29 @@ struct VariableBinding {
 };
 
 const VariableBinding kVariableBindings[] = {
-    {"lineEdit", "Temp", 100, DataType::UWord, 0, 65535, 1,  false},
-    {"lineEditCounter", "Counter", 102, DataType::Float, -10.0f, 65535.0f, 2,  false},
-    {"xAbsDisplay", "xAbs", 104, DataType::Float, -10000.0f, 10000.0f, 1,  true},
-    {"xRelDisplay", "xRel", 106, DataType::Float, -10000.0f, 10000.0f, 1,  true},
-    {"yAbsDisplay", "yAbs", 108, DataType::Float, -10000.0f, 10000.0f, 1,  true},
-    {"yRelDisplay", "yRel", 110, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"lineEdit", 100, DataType::UWord, 0, 65535, 1,  false},
+    {"lineEditCounter", 102, DataType::Float, -10.0f, 65535.0f, 2,  false},
+    {"xAbsDisplay", 104, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"xRelDisplay", 106, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"yAbsDisplay", 108, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"yRelDisplay", 110, DataType::Float, -10000.0f, 10000.0f, 1,  true},
     };
 
 
 struct ButtonBinding {
     const char *widgetName;
-    const char *varName;
     quint16 address;
     uint16_t bitIndex = 0;
 };
 
 const ButtonBinding kButtonBindings[] = {
-    {"StartButton", "Start", 200, 0},
-    {"xRstButton", "xRst", 200, 1},
-    {"yRstButton", "yRst", 200, 2},
+    {"StartButton", 112, 0},
+    {"xRstButton", 112, 1},
+    {"yRstButton", 112, 2},
     };
 
 const ButtonBinding kToggleBindings[] = {
-    {"toggleButtonEnable", "Enable", 200, 1},
+    {"toggleButtonEnable", 113, 0},
     };
 
 struct MultiStateBinding {
@@ -62,8 +59,8 @@ struct MultiStateBinding {
 };
 
 const MultiStateBinding kMultiStateBindings[] = {
-    {"multiStateMode", "Mode", 202},
-};
+    {"manualAxisSelect", "Mode", 214},
+    };
 
 } // namespace
 
@@ -82,11 +79,11 @@ MainWindow::MainWindow(QWidget *parent)
             ui->stackedWidgetPages, &QStackedWidget::setCurrentIndex);
     connect(ui->stackedWidgetPages, &QStackedWidget::currentChanged,
             this, [navGroup](int index) {
-        if (QAbstractButton *b = navGroup->button(index)) {
-            if (!b->isChecked())
-                b->setChecked(true);
-        }
-    });
+                if (QAbstractButton *b = navGroup->button(index)) {
+                    if (!b->isChecked())
+                        b->setChecked(true);
+                }
+            });
 
     const auto displays = findChildren<NumericDisplay*>();
     for (NumericDisplay *display : displays) {
@@ -94,6 +91,8 @@ MainWindow::MainWindow(QWidget *parent)
             continue;
         connect(display, &NumericDisplay::clicked, this, &MainWindow::showNumPad);
     }
+
+
 
     QSettings s;
     ModbusSettings modbusCfg = ModbusSettings::load(s);
@@ -103,36 +102,48 @@ MainWindow::MainWindow(QWidget *parent)
         auto *display = findChild<NumericDisplay *>(QLatin1String(b.widgetName));
         if (!display)
             continue;
-        display->variable()->setName(QLatin1String(b.varName));
+        display->variable()->setName(QLatin1String(b.widgetName));
         display->variable()->setType(b.type);
         display->variable()->setMinimum(b.min);
         display->variable()->setMaximum(b.max);
         display->variable()->setFractional(b.fractional);
-       // display->setReadOnly(b.readOnly);
-        auto var = model->addVar(display->variable()->name(), b.address, display->variable()->rawValueSize());
-        connect(var, &ModbusVar::valueChanged, display->variable(),&Variable::setRawData);
-        connect(display->variable(),&Variable::rawValueChanged,this,[this, b](const QVector<uint16_t> &val) {
-            if (!val.isEmpty())
-            emit model->requestWrite(b.address,val) ;
-        });
+        display->variable()->setReadAddress(b.address);
+        display->variable()->setWriteAddress(b.address);
     }
+
 
     for (const ButtonBinding &b : kButtonBindings) {
         auto *btn = findChild<MomentaryButton *>(QLatin1String(b.widgetName));
         if (!btn)
             continue;
-        btn->variable()->setName(QLatin1String(b.varName));
-        btn->variable()->setBitIndex(b.bitIndex);
-        //model->addVar(btn->variable(), b.address);
+        btn->variable()->setName(QLatin1String(b.widgetName));
+        btn->variable()->setReadAddress(b.address);
+        btn->variable()->setWriteAddress(b.address);
+        btn->variable()->setReadAddressBit(b.bitIndex);
+        btn->variable()->setWriteAddressBit(b.bitIndex);
+        // auto var = model->addVar(btn->variable()->name(), btn->variable()->readAddress(),btn->variable()->rawValueSize());
+        // connect(var, &ModbusVar::valueChanged, btn->variable(),&Variable::setRawData);
+        // connect(btn->variable(),&Variable::rawValueChanged,this,[this, btn](const QVector<uint16_t> &val) {
+        //     if (!val.isEmpty())
+        //         emit model->requestWrite(btn->variable()->writeAddress(),val) ;
+        // });
     }
 
     for (const ButtonBinding &b : kToggleBindings) {
         auto *btn = findChild<ToggleButton *>(QLatin1String(b.widgetName));
         if (!btn)
             continue;
-        btn->variable()->setName(QLatin1String(b.varName));
-        btn->variable()->setBitIndex(b.bitIndex);
-       // model->addVar(btn->variable(), b.address);
+        btn->variable()->setName(QLatin1String(b.widgetName));
+        btn->variable()->setReadAddress(b.address);
+        btn->variable()->setWriteAddress(b.address);
+        btn->variable()->setReadAddressBit(b.bitIndex);
+        btn->variable()->setWriteAddressBit(b.bitIndex);
+        // auto var = model->addVar(btn->variable()->name(), btn->variable()->readAddress(),btn->variable()->rawValueSize());
+        // connect(var, &ModbusVar::valueChanged, btn->variable(),&Variable::setRawData);
+        // connect(btn->variable(),&Variable::rawValueChanged,this,[this, btn](const QVector<uint16_t> &val) {
+        //     if (!val.isEmpty())
+        //         emit model->requestWrite(btn->variable()->writeAddress(),val) ;
+        // });
     }
 
     for (const MultiStateBinding &b : kMultiStateBindings) {
@@ -143,9 +154,30 @@ MainWindow::MainWindow(QWidget *parent)
         btn->variable()->setType(DataType::UWord);
         btn->variable()->setMinimum(0.0f);
         btn->variable()->setMaximum(static_cast<float>(btn->stateCount() - 1));
-        //model->addVar(btn->variable(), b.address);
+        btn->variable()->setReadAddress(b.address);
+        btn->variable()->setWriteAddress(b.address);
+        // auto var = model->addVar(btn->variable()->name(), btn->variable()->readAddress(),btn->variable()->rawValueSize());
+        // connect(var, &ModbusVar::valueChanged, btn->variable(),&Variable::setRawData);
+        // connect(btn->variable(),&Variable::rawValueChanged,this,[this, btn](const QVector<uint16_t> &val) {
+        //     if (!val.isEmpty())
+        //         emit model->requestWrite(btn->variable()->writeAddress(),val) ;
+        // });
     }
-
+    const auto displays1 = findChildren<QWidget*>();
+    for (QWidget *display : displays1) {
+        if (!display)
+            continue;
+        if (display->property("variable").isValid())
+        {
+            Variable *dsp=display->property("variable").value<Variable *>();
+            auto var = model->addVar(dsp->name(), dsp->readAddress(), dsp->rawValueSize());
+            connect(var, &ModbusVar::valueChanged, dsp,&Variable::setRawData);
+            connect(dsp, &Variable::rawValueChanged,this,[this, dsp](const QVector<uint16_t> &val) {
+                if (!val.isEmpty())
+                    emit model->requestWrite(dsp->writeAddress(),val) ;
+            });
+        }
+    }
     manager = new ModbusManager(model, this);
     connect(manager, &ModbusManager::connectionStateChanged, this, [this](const QString &stateText) {
         ui->statusbar->showMessage(stateText, 0);
