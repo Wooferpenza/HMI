@@ -37,6 +37,7 @@ const VariableBinding kVariableBindings[] = {
     {"yRelDisplay", "yRel", 110, DataType::Float, -10000.0f, 10000.0f, 1,  true},
     };
 
+
 struct ButtonBinding {
     const char *widgetName;
     const char *varName;
