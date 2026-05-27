@@ -18,6 +18,7 @@ public:
     uint16_t address;
     uint16_t size;
     QVector<uint16_t> value;
+
 signals:
     void valueChanged(const QVector<uint16_t> &value);
 };
@@ -27,7 +28,6 @@ struct ModbusRequest {
     uint16_t startAddress;
     uint16_t count;
     QVector<uint16_t> data;
-    QString name;
 };
 
 #endif

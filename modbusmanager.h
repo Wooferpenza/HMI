@@ -23,7 +23,7 @@ public:
     void applySettings(const ModbusSettings &settings);
     void disconnectDevice();
     void stopPolling();
-    void writeVariable(const QString &name, const QVector<uint16_t> &value);
+    void writeVariable(const uint16_t &address, const QVector<uint16_t> &value);
 
 signals:
     void connectionStateChanged(const QString &stateText);

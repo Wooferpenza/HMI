@@ -109,7 +109,12 @@ MainWindow::MainWindow(QWidget *parent)
         display->variable()->setMaximum(b.max);
         display->variable()->setFractional(b.fractional);
        // display->setReadOnly(b.readOnly);
-        model->addVar(display->variable(), b.address);
+        auto var = model->addVar(display->variable()->name(), b.address, display->variable()->rawValueSize());
+        connect(var, &ModbusVar::valueChanged, display->variable(),&Variable::setRawData);
+        connect(display->variable(),&Variable::rawValueChanged,this,[this, b](const QVector<uint16_t> &val) {
+            if (!val.isEmpty())
+            emit model->requestWrite(b.address,val) ;
+        });
     }
 
     for (const ButtonBinding &b : kButtonBindings) {
@@ -118,7 +123,7 @@ MainWindow::MainWindow(QWidget *parent)
             continue;
         btn->variable()->setName(QLatin1String(b.varName));
         btn->variable()->setBitIndex(b.bitIndex);
-        model->addVar(btn->variable(), b.address);
+        //model->addVar(btn->variable(), b.address);
     }
 
     for (const ButtonBinding &b : kToggleBindings) {
@@ -127,7 +132,7 @@ MainWindow::MainWindow(QWidget *parent)
             continue;
         btn->variable()->setName(QLatin1String(b.varName));
         btn->variable()->setBitIndex(b.bitIndex);
-        model->addVar(btn->variable(), b.address);
+       // model->addVar(btn->variable(), b.address);
     }
 
     for (const MultiStateBinding &b : kMultiStateBindings) {
@@ -138,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent)
         btn->variable()->setType(DataType::UWord);
         btn->variable()->setMinimum(0.0f);
         btn->variable()->setMaximum(static_cast<float>(btn->stateCount() - 1));
-        model->addVar(btn->variable(), b.address);
+        //model->addVar(btn->variable(), b.address);
     }
 
     manager = new ModbusManager(model, this);

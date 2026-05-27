@@ -1,5 +1,6 @@
 #include "modbusmanager.h"
 #include "modbusmodel.h"
+#include <QVariant>
 #include <QModbusReply>
 #include <QModbusDataUnit>
 #include <QtCore/QtNumeric>
@@ -24,8 +25,7 @@ ModbusManager::ModbusManager(ModbusModel *model, QObject *parent) : QObject(pare
     connect(m_client, &QModbusClient::stateChanged, this, &ModbusManager::onClientStateChanged);
 
     if (m_model) {
-        connect(m_model, &ModbusModel::requestWrite,
-                this, &ModbusManager::writeVariable);
+        connect(m_model, &ModbusModel::requestWrite, this, &ModbusManager::writeVariable);
     }
 
     m_reconnectTimer = new QTimer(this);
@@ -167,18 +167,15 @@ void ModbusManager::triggerPoll() {
         }
 
         const uint16_t count = static_cast<uint16_t>(end - start);
-        m_queue.enqueue({ModbusRequest::Read, start, count, {}, {}});
+        m_queue.enqueue({ModbusRequest::Read, start, count, {}});
         i = j;
     }
 
     processQueue();
 }
 
-void ModbusManager::writeVariable(const QString &name, const QVector<uint16_t> &value) {
-    const ModbusVar *var = m_model->findVariable(name);
-    if (!var)
-        return;
-    m_queue.prepend({ModbusRequest::Write, var->address, var->size, value, name});
+void ModbusManager::writeVariable(const uint16_t &address, const QVector<uint16_t> &value) {
+    m_queue.prepend({ModbusRequest::Write, address, static_cast<uint16_t>(value.size()), value});
     processQueue();
 }
 
@@ -187,7 +184,6 @@ void ModbusManager::processQueue() {
     m_busy = true;
     auto req = m_queue.dequeue();
     m_inFlightType = req.type;
-    m_inFlightName = req.name;
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, req.startAddress, req.count);
 
     QModbusReply *reply = nullptr;
@@ -245,9 +241,8 @@ void ModbusManager::clearPendingReads() {
 void ModbusManager::parseReadData(const QModbusDataUnit &res) {
     const uint16_t start = static_cast<uint16_t>(res.startAddress());
     const uint16_t valuesCount = static_cast<uint16_t>(res.valueCount());
-
     const auto vars = m_model->variablesInRange(start, valuesCount);
-    for (const ModbusVar *v : vars) {
+    for ( ModbusVar *v : vars) {
         const uint16_t offset = static_cast<uint16_t>(v->address - start);
         const uint16_t endIndex = static_cast<uint16_t>(offset + v->size);
         if (endIndex > valuesCount)
@@ -258,6 +253,6 @@ void ModbusManager::parseReadData(const QModbusDataUnit &res) {
         for (int j = 0; j < v->size; ++j)
             val.append(res.value(offset + j));
 
-        m_model->updateVariable(v->name, val);
+        m_model->updateVariable(v, val);
     }
 }
