@@ -29,10 +29,13 @@ struct VariableBinding {
 const VariableBinding kVariableBindings[] = {
     {"lineEdit", 100, DataType::UWord, 0, 65535, 1,  false},
     {"lineEditCounter", 102, DataType::Float, -10.0f, 65535.0f, 2,  false},
-    {"xAbsDisplay", 104, DataType::Float, -10000.0f, 10000.0f, 1,  true},
-    {"xRelDisplay", 106, DataType::Float, -10000.0f, 10000.0f, 1,  true},
-    {"yAbsDisplay", 108, DataType::Float, -10000.0f, 10000.0f, 1,  true},
-    {"yRelDisplay", 110, DataType::Float, -10000.0f, 10000.0f, 1,  true},
+    {"xAbsDisplay", 46,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
+    {"xRelDisplay", 48,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
+    {"yAbsDisplay", 32,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
+    {"yRelDisplay", 34,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
+    {"aRelDisplay", 62,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
+    {"cutSpeedDisplay", 1100,  DataType::Float, 0.0f, 1000.0f, 0,  false},
+
     };
 
 
@@ -44,12 +47,19 @@ struct ButtonBinding {
 
 const ButtonBinding kButtonBindings[] = {
     {"StartButton", 112, 0},
-    {"xRstButton", 112, 1},
-    {"yRstButton", 112, 2},
+    {"xRstButton", 38, 0},
+    {"yRstButton", 24, 0},
+    {"aRstButton", 52, 0},
+    {"cutStartButton", 0, 0},
+    {"cutStopButton", 0, 1},
+    {"clumpDownButton", 0, 2},
+    {"clumpUpButton", 0, 3},
     };
 
 const ButtonBinding kToggleBindings[] = {
     {"toggleButtonEnable", 113, 0},
+     {"cutRunToggle", 10, 0},
+
     };
 
 struct MultiStateBinding {
@@ -59,7 +69,8 @@ struct MultiStateBinding {
 };
 
 const MultiStateBinding kMultiStateBindings[] = {
-    {"manualAxisSelect", "Mode", 214},
+    {"manualAxisSelect", "Mode", 20},
+    {"manualStep", "Mode", 21},
     };
 
 } // namespace
@@ -109,6 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
         display->variable()->setFractional(b.fractional);
         display->variable()->setReadAddress(b.address);
         display->variable()->setWriteAddress(b.address);
+        display->setReadOnly(b.readOnly);
     }
 
 

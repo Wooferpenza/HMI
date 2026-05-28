@@ -76,3 +76,55 @@ void NumericDisplay::setReadOnly(bool newReadOnly)
 
 
 
+
+uint16_t NumericDisplay::readAddress() const
+{
+    return m_readAddress;
+}
+
+void NumericDisplay::setReadAddress(uint16_t newReadAddress)
+{
+    if (m_readAddress == newReadAddress)
+        return;
+    m_readAddress = newReadAddress;
+    emit readAddressChanged();
+}
+
+uint16_t NumericDisplay::readAddressBit() const
+{
+    return m_readAddressBit;
+}
+
+void NumericDisplay::setReadAddressBit(uint16_t newReadAddressBit)
+{
+    if (m_readAddressBit == newReadAddressBit)
+        return;
+    m_readAddressBit = newReadAddressBit;
+    emit readAddressBitChanged();
+}
+
+uint16_t NumericDisplay::writeAddress() const
+{
+    return m_writeAddress;
+}
+
+void NumericDisplay::setWriteAddress(uint16_t newWriteAddress)
+{
+    if (m_writeAddress == newWriteAddress)
+        return;
+    m_writeAddress = newWriteAddress;
+    emit writeAddressChanged();
+}
+
+uint16_t NumericDisplay::writeAddressBit() const
+{
+    return m_writeAddressBit;
+}
+
+void NumericDisplay::setWriteAddressBit(uint16_t newWriteAddressBit)
+{
+    if (m_writeAddressBit == newWriteAddressBit)
+        return;
+    m_writeAddressBit = newWriteAddressBit;
+    emit writeAddressBitChanged();
+}

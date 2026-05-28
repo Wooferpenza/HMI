@@ -86,7 +86,7 @@
          <enum>Qt::FocusPolicy::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Обзор</string>
+         <string>Работа</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -208,7 +208,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidgetPages">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="pageOverview">
          <widget class="NumericDisplay" name="lineEdit">
@@ -279,25 +279,6 @@
           </property>
           <property name="text">
            <string>PushButton</string>
-          </property>
-         </widget>
-         <widget class="ToggleButton" name="toggleButtonEnable">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>220</y>
-            <width>101</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::FocusPolicy::NoFocus</enum>
-          </property>
-          <property name="stateTexts" stdset="0">
-           <stringlist>
-            <string>Выкл</string>
-            <string>Вкл</string>
-           </stringlist>
           </property>
          </widget>
          <widget class="QGroupBox" name="CoordinateBox">
@@ -645,7 +626,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QGroupBox" name="CoordinateBox_2">
+         <widget class="QGroupBox" name="ManualControlBox">
           <property name="geometry">
            <rect>
             <x>490</x>
@@ -716,7 +697,7 @@
                 <enum>Qt::FocusPolicy::NoFocus</enum>
                </property>
                <property name="stateCount" stdset="0">
-                <number>3</number>
+                <number>2</number>
                </property>
                <property name="currentState" stdset="0">
                 <number>0</number>
@@ -732,7 +713,6 @@
                 <stringlist>
                  <string>X1</string>
                  <string>X10</string>
-                 <string>X100</string>
                 </stringlist>
                </property>
               </widget>
@@ -781,6 +761,196 @@
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QGroupBox" name="CutBox">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>260</y>
+            <width>381</width>
+            <height>223</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>18</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Фреза</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="MomentaryButton" name="cutStopButton">
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>Стоп</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="ToggleButton" name="cutRunToggle">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="stateTexts" stdset="0">
+                <stringlist/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="MomentaryButton" name="cutStartButton">
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>Пуск</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Скорость, &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;об/мин&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="NumericDisplay" name="cutSpeedDisplay">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>18</pointsize>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="mouseTracking">
+                <bool>false</bool>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QGroupBox" name="ClumpBox">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>30</y>
+            <width>381</width>
+            <height>221</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>18</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Поджим</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="MomentaryButton" name="clumpUpButton">
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>Вверх</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="MomentaryButton" name="clumpDownButton">
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>Вниз</string>
                </property>
               </widget>
              </item>
@@ -869,7 +1039,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">
