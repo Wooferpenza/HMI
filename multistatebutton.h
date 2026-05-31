@@ -4,14 +4,19 @@
 #include <QPushButton>
 #include <QStringList>
 #include "variable.h"
+#include "variableproperty.h"
 
-class MultiStateButton : public QPushButton
+class MultiStateButton : public QPushButton, public VariableProperty <MultiStateButton>
 {
     Q_OBJECT
     Q_PROPERTY(Variable *readVariable READ readVariable FINAL)
     Q_PROPERTY(Variable *writeVariable READ writeVariable FINAL)
-    Q_PROPERTY(QString readAddress READ readAddress WRITE setReadAddress NOTIFY readAddressChanged FINAL)
-    Q_PROPERTY(QString writeAddress READ writeAddress WRITE setWriteAddress NOTIFY writeAddressChanged FINAL)
+    IMPLEMENT_SHARED_PROPERTY(QString, format);
+    IMPLEMENT_SHARED_PROPERTY(uint16_t, fractional);
+    IMPLEMENT_SHARED_PROPERTY(float, minimum);
+    IMPLEMENT_SHARED_PROPERTY(float, maximum);
+    IMPLEMENT_SHARED_PROPERTY(QString, readAddress);
+    IMPLEMENT_SHARED_PROPERTY(QString, writeAddress);
     Q_PROPERTY(int stateCount READ stateCount WRITE setStateCount NOTIFY stateCountChanged FINAL)
     Q_PROPERTY(QStringList stateIconPaths READ stateIconPaths WRITE setStateIconPaths NOTIFY stateIconPathsChanged FINAL)
     Q_PROPERTY(QStringList stateTexts READ stateTexts WRITE setStateTexts NOTIFY stateTextsChanged FINAL)
@@ -50,10 +55,8 @@ signals:
     void stateTextsChanged();
     void stateTextFallbackChanged();
     void currentStateChanged(int);
-    void readAddressChanged(uint16_t);
-    void writeAddressChanged(uint16_t);
 
-protected:
+ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private slots:

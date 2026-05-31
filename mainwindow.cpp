@@ -16,7 +16,7 @@ namespace {
 struct VariableBinding {
     const char *widgetName;
     quint16 address;
-    DataType type = DataType::UWord;
+    Variable::DataFormat type = Variable::DataFormat::UWord;
     float min = 0.0f;
     float max = 100.0f;
     uint fractional = 0;
@@ -24,14 +24,14 @@ struct VariableBinding {
 };
 
 const VariableBinding kVariableBindings[] = {
-    {"lineEdit", 100, DataType::UWord, 0, 65535, 1,  false},
-    {"lineEditCounter", 102, DataType::Float, -10.0f, 65535.0f, 2,  false},
-    {"xAbsDisplay", 46,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
-    {"xRelDisplay", 48,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
-    {"yAbsDisplay", 32,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
-    {"yRelDisplay", 34,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
-    {"aRelDisplay", 62,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
-    {"cutSpeedDisplay", 1100,  DataType::Float, 0.0f, 1000.0f, 0,  false},
+    {"lineEdit", 100, Variable::DataFormat::UWord, 0, 65535, 1,  false},
+    {"lineEditCounter", 102, Variable::DataFormat::Float, -10.0f, 65535.0f, 2,  false},
+    {"xAbsDisplay", 46,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
+    {"xRelDisplay", 48,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
+    {"yAbsDisplay", 32,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
+    {"yRelDisplay", 34,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
+    {"aRelDisplay", 62,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
+    {"cutSpeedDisplay", 1100,  Variable::DataFormat::Float, 0.0f, 1000.0f, 0,  false},
     };
 
 

@@ -6,7 +6,7 @@
 #include <cmath>
 #include "ui_numpaddialog.h"
 
-NumpadDialog::NumpadDialog(QWidget *parent, DataType type, float min, float max, uint16_t fractional)
+NumpadDialog::NumpadDialog(QWidget *parent, Variable::DataFormat type, float min, float max, uint16_t fractional)
     : QDialog(parent)
     , ui(new Ui::NumpadDialog)
 {
@@ -46,7 +46,7 @@ void NumpadDialog::setRange(float min, float max)
     ui->label->setText(QString::number(m_minimum) + " ~ " + QString::number(m_maximum));
 }
 
-void NumpadDialog::setType(DataType type)
+void NumpadDialog::setType(Variable::DataFormat type)
 {
     m_type = type;
 }
@@ -107,24 +107,24 @@ void NumpadDialog::handleEnterButton()
     bool ok = false;
     QVariant result;
     const bool intWithFrac = m_fractional > 0
-        && m_type != DataType::Float
-        && m_type != DataType::Bit;
+        && m_type != Variable::DataFormat::Float
+        && m_type != Variable::DataFormat::Bit;
 
     switch (m_type)
     {
-    case DataType::Bit:
+    case Variable::DataFormat::Bit:
         if (resultStr == QLatin1String("0") || resultStr == QLatin1String("1")) {
             result = (resultStr == QLatin1String("1"));
             ok = true;
         }
         break;
-    case DataType::Float:
+    case Variable::DataFormat::Float:
         result = resultStr.toFloat(&ok);
         break;
-    case DataType::UWord:
-    case DataType::SWord:
-    case DataType::UDWord:
-    case DataType::SDWord:
+    case Variable::DataFormat::UWord:
+    case Variable::DataFormat::SWord:
+    case Variable::DataFormat::UDWord:
+    case Variable::DataFormat::SDWord:
         if (intWithFrac) {
             const double entered = resultStr.toDouble(&ok);
             if (ok) {
@@ -134,10 +134,10 @@ void NumpadDialog::handleEnterButton()
             }
         } else {
             switch (m_type) {
-            case DataType::UWord:  result = resultStr.toUShort(&ok); break;
-            case DataType::SWord:  result = resultStr.toShort(&ok);  break;
-            case DataType::UDWord: result = resultStr.toUInt(&ok);   break;
-            case DataType::SDWord: result = resultStr.toInt(&ok);    break;
+            case Variable::DataFormat::UWord:  result = resultStr.toUShort(&ok); break;
+            case Variable::DataFormat::SWord:  result = resultStr.toShort(&ok);  break;
+            case Variable::DataFormat::UDWord: result = resultStr.toUInt(&ok);   break;
+            case Variable::DataFormat::SDWord: result = resultStr.toInt(&ok);    break;
             default: break;
             }
         }
@@ -147,7 +147,7 @@ void NumpadDialog::handleEnterButton()
     }
 
     if (!ok || resultStr.isEmpty()) {
-        const QString msg = (m_type == DataType::Bit)
+        const QString msg = (m_type == Variable::DataFormat::Bit)
             ? tr("Введите 0 или 1")
             : tr("Введите число");
         QMessageBox::warning(this, tr("Ошибка"), msg);

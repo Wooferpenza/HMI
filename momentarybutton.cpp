@@ -4,9 +4,10 @@ MomentaryButton::MomentaryButton(QWidget *parent)
     : QPushButton(parent)
     , m_writeVariable(new Variable(this))
 {
-    m_writeVariable->setType(DataType::Bit);
+    m_writeVariable->setType(Variable::DataFormat::Bit);
     m_writeVariable->setMinimum(0);
     m_writeVariable->setMaximum(1);
+   // connect(this, &MomentaryButton::, m_writeVariable, &Variable::setAddress);
     connect(this, &MomentaryButton::writeAddressChanged, m_writeVariable, &Variable::setAddress);
     connect(this, &MomentaryButton::writeAddressBitChanged, m_writeVariable, &Variable::setAddressBit);
     connect(this, &QPushButton::pressed, this, [this]() {

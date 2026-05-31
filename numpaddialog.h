@@ -12,11 +12,11 @@ class NumpadDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NumpadDialog(QWidget *parent = nullptr, DataType type = DataType::UWord,
+    explicit NumpadDialog(QWidget *parent = nullptr, Variable::DataFormat type = Variable::DataFormat::UWord,
                           float min = 0, float max = 100, uint16_t fractional = 0);
     ~NumpadDialog() override;
     void setRange(float min, float max);
-    void setType(DataType type);
+    void setType(Variable::DataFormat type);
     void setFractional(uint16_t frac);
     void setCurrentValue(const QString &text);
 
@@ -36,7 +36,7 @@ private:
     Ui::NumpadDialog *ui;
     float m_minimum;
     float m_maximum;
-    DataType m_type;
+    Variable::DataFormat m_type;
     uint16_t m_fractional = 0;
 };
 

@@ -5,16 +5,23 @@ ToggleButton::ToggleButton(QWidget *parent)
     , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
 {
     setCheckable(true);
-    m_readVariable->setType(DataType::Bit);
+    connect(this, &ToggleButton::formatChanged, m_readVariable, &Variable::setFormat);
+    connect(this, &ToggleButton::formatChanged, m_writeVariable, &Variable::setFormat);
+    connect(this, &ToggleButton::fractionalChanged, m_readVariable, &Variable::setFractional);
+    connect(this, &ToggleButton::fractionalChanged, m_writeVariable, &Variable::setFractional);
+    connect(this, &ToggleButton::minimumChanged, m_readVariable, &Variable::setMinimum);
+    connect(this, &ToggleButton::minimumChanged, m_writeVariable, &Variable::setMinimum);
+    connect(this, &ToggleButton::maximumChanged, m_readVariable, &Variable::setMaximum);
+    connect(this, &ToggleButton::maximumChanged, m_writeVariable, &Variable::setMaximum);
+    connect(this, &ToggleButton::readAddressChanged, m_readVariable, &Variable::setAddressStr);
+    connect(this, &ToggleButton::writeAddressChanged, m_writeVariable, &Variable::setAddressStr);
+
+    m_readVariable->setType(Variable::DataFormat::Bit);
     m_readVariable->setMinimum(0);
     m_readVariable->setMaximum(1);
-    m_writeVariable->setType(DataType::Bit);
+    m_writeVariable->setType(Variable::DataFormat::Bit);
     m_writeVariable->setMinimum(0);
     m_writeVariable->setMaximum(1);
-    connect(this, &ToggleButton::readAddressChanged, m_readVariable, &Variable::setAddress);
-    connect(this, &ToggleButton::readAddressBitChanged, m_readVariable, &Variable::setAddressBit);
-    connect(this, &ToggleButton::writeAddressChanged, m_writeVariable, &Variable::setAddress);
-    connect(this, &ToggleButton::writeAddressBitChanged, m_writeVariable, &Variable::setAddressBit);
 
     connect(m_readVariable, &Variable::valueChanged, this, &ToggleButton::onModbusValueChanged);
     connect(this, &QPushButton::clicked, this, &ToggleButton::onClicked);
@@ -87,58 +94,6 @@ void ToggleButton::ensureStateTextListLength()
         m_stateTexts.append(QString());
     while (m_stateTexts.size() > 2)
         m_stateTexts.removeLast();
-}
-
-uint16_t ToggleButton::readAddress() const
-{
-    return m_readAddress;
-}
-
-void ToggleButton::setReadAddress(uint16_t newReadAddress)
-{
-    if (m_readAddress == newReadAddress)
-        return;
-    m_readAddress = newReadAddress;
-    emit readAddressChanged(m_readAddress);
-}
-
-uint16_t ToggleButton::readAddressBit() const
-{
-    return m_readAddressBit;
-}
-
-void ToggleButton::setReadAddressBit(uint16_t newReadAddressBit)
-{
-    if (m_readAddressBit == newReadAddressBit)
-        return;
-    m_readAddressBit = newReadAddressBit;
-    emit readAddressBitChanged(m_readAddressBit);
-}
-
-uint16_t ToggleButton::writeAddress() const
-{
-    return m_writeAddress;
-}
-
-void ToggleButton::setWriteAddress(uint16_t newWriteAddress)
-{
-    if (m_writeAddress == newWriteAddress)
-        return;
-    m_writeAddress = newWriteAddress;
-    emit writeAddressChanged(m_writeAddress);
-}
-
-uint16_t ToggleButton::writeAddressBit() const
-{
-    return m_writeAddressBit;
-}
-
-void ToggleButton::setWriteAddressBit(uint16_t newWriteAddressBit)
-{
-    if (m_writeAddressBit == newWriteAddressBit)
-        return;
-    m_writeAddressBit = newWriteAddressBit;
-    emit writeAddressBitChanged(m_writeAddressBit);
 }
 
 Variable *ToggleButton::readVariable() const

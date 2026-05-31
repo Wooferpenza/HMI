@@ -45,6 +45,7 @@ set(PROJECT_SOURCES
 qt_add_executable(HMI
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    variableproperty.h
 )
 
 target_include_directories(HMI PRIVATE

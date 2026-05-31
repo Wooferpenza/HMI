@@ -7,22 +7,20 @@ MultiStateButton::MultiStateButton(QWidget *parent)
     : QPushButton(parent)
     , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
 {
-
-
-    m_readVariable->setType(DataType::UWord);
-    m_readVariable->setMinimum(0);
-    m_readVariable->setMaximum(1);
-    m_writeVariable->setType(DataType::UWord);
-    m_writeVariable->setMinimum(0);
-    m_writeVariable->setMaximum(1);
-    ensureListLengths();
-
-    connect(this, &MultiStateButton::readAddressChanged, m_readVariable, &Variable::setAddress);
-    connect(this, &MultiStateButton::writeAddressChanged, m_writeVariable, &Variable::setAddress);
+    connect(this, &MultiStateButton::formatChanged, m_readVariable, &Variable::setFormat);
+    connect(this, &MultiStateButton::formatChanged, m_writeVariable, &Variable::setFormat);
+    connect(this, &MultiStateButton::fractionalChanged, m_readVariable, &Variable::setFractional);
+    connect(this, &MultiStateButton::fractionalChanged, m_writeVariable, &Variable::setFractional);
+    connect(this, &MultiStateButton::minimumChanged, m_readVariable, &Variable::setMinimum);
+    connect(this, &MultiStateButton::minimumChanged, m_writeVariable, &Variable::setMinimum);
+    connect(this, &MultiStateButton::maximumChanged, m_readVariable, &Variable::setMaximum);
+    connect(this, &MultiStateButton::maximumChanged, m_writeVariable, &Variable::setMaximum);
+    connect(this, &MultiStateButton::readAddressChanged, m_readVariable, &Variable::setAddressStr);
+    connect(this, &MultiStateButton::writeAddressChanged, m_writeVariable, &Variable::setAddressStr);
 
     connect(m_readVariable, &Variable::valueChanged,this, &MultiStateButton::onModbusValueChanged);
     connect(this, &QPushButton::clicked, this, &MultiStateButton::onClicked);
-
+    ensureListLengths();
     applyStateVisuals();
 }
 
@@ -146,34 +144,12 @@ QString MultiStateButton::readAddress() const
     return m_readAddress;
 }
 
-void MultiStateButton::setReadAddress(const QString &newReadAddress)
-{
-    if (m_readAddress == newReadAddress)
-        return;
-    m_readAddress = newReadAddress;
-    static const QRegularExpression regex("^D\\d+$");
-    if(!regex.match(m_readAddress).hasMatch())
-    {qFatal("Неверный адрес для чтения %s", this->objectName().toUtf8().constData()) ; return; }
-
-
-    emit readAddressChanged(m_readAddress.sliced(1).toInt());
-}
 
 QString MultiStateButton::writeAddress() const
 {
     return m_writeAddress;
 }
 
-void MultiStateButton::setWriteAddress(const QString &newWriteAddress)
-{
-    if (m_writeAddress == newWriteAddress)
-        return;
-    m_writeAddress = newWriteAddress;
-    static const QRegularExpression regex("^D\\d+$");
-    if(!regex.match(m_writeAddress).hasMatch())
-    {qFatal("Неверный адрес для записи %s", this->objectName().toUtf8().constData()) ; return; }
-    emit writeAddressChanged(m_writeAddress.sliced(1).toInt());
-}
 
 Variable *MultiStateButton::readVariable() const
 {

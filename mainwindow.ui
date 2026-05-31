@@ -243,6 +243,24 @@
           <property name="readOnly">
            <bool>false</bool>
           </property>
+          <property name="format" stdset="0">
+           <string/>
+          </property>
+          <property name="fractional" stdset="0">
+           <UInt>0</UInt>
+          </property>
+          <property name="minimum" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="readAddress" stdset="0">
+           <string>D0</string>
+          </property>
+          <property name="writeAddress" stdset="0">
+           <string>D0</string>
+          </property>
          </widget>
          <widget class="NumericDisplay" name="lineEditCounter">
           <property name="geometry">
@@ -471,12 +489,6 @@ QGroupBox::title {
                <property name="readOnly">
                 <bool>true</bool>
                </property>
-               <property name="readAddress" stdset="0">
-                <UInt>0</UInt>
-               </property>
-               <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
-               </property>
               </widget>
              </item>
              <item row="5" column="0">
@@ -549,9 +561,15 @@ QGroupBox::title {
                 <bool>true</bool>
                </property>
                <property name="readAddress" stdset="0">
-                <UInt>0</UInt>
+                <string/>
                </property>
                <property name="writeAddress" stdset="0">
+                <string/>
+               </property>
+               <property name="format" stdset="0">
+                <string/>
+               </property>
+               <property name="fractional" stdset="0">
                 <UInt>0</UInt>
                </property>
               </widget>
@@ -867,10 +885,13 @@ QGroupBox::title {
                 </stringlist>
                </property>
                <property name="readAddress" stdset="0">
-                <string>D0</string>
+                <string/>
                </property>
                <property name="writeAddress" stdset="0">
-                <string>D1</string>
+                <string/>
+               </property>
+               <property name="format" stdset="0">
+                <string/>
                </property>
               </widget>
              </item>
@@ -909,6 +930,15 @@ QGroupBox::title {
                  <string>0,01</string>
                  <string>0,05</string>
                 </stringlist>
+               </property>
+               <property name="readAddress" stdset="0">
+                <string>D0</string>
+               </property>
+               <property name="writeAddress" stdset="0">
+                <string>D0</string>
+               </property>
+               <property name="format" stdset="0">
+                <string>UWord</string>
                </property>
               </widget>
              </item>
