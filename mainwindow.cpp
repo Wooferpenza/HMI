@@ -1,8 +1,5 @@
 #include "mainwindow.h"
-#include "momentarybutton.h"
 #include "modbusmanager.h"
-#include "togglebutton.h"
-#include "multistatebutton.h"
 #include "modbusmodel.h"
 #include "modbussettings.h"
 #include "modbussettingsdialog.h"
@@ -35,43 +32,10 @@ const VariableBinding kVariableBindings[] = {
     {"yRelDisplay", 34,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
     {"aRelDisplay", 62,  DataType::Float, -10000.0f, 10000.0f, 2,  true},
     {"cutSpeedDisplay", 1100,  DataType::Float, 0.0f, 1000.0f, 0,  false},
-
     };
 
 
-struct ButtonBinding {
-    const char *widgetName;
-    quint16 address;
-    uint16_t bitIndex = 0;
-};
 
-const ButtonBinding kButtonBindings[] = {
-    {"StartButton", 112, 0},
-    {"xRstButton", 38, 0},
-    {"yRstButton", 24, 0},
-    {"aRstButton", 52, 0},
-    {"cutStartButton", 0, 0},
-    {"cutStopButton", 0, 1},
-    {"clumpDownButton", 0, 2},
-    {"clumpUpButton", 0, 3},
-    };
-
-const ButtonBinding kToggleBindings[] = {
-    {"toggleButtonEnable", 113, 0},
-     {"cutRunToggle", 10, 0},
-
-    };
-
-struct MultiStateBinding {
-    const char *widgetName;
-    const char *varName;
-    quint16 address;
-};
-
-const MultiStateBinding kMultiStateBindings[] = {
-    {"manualAxisSelect", "Mode", 20},
-    {"manualStep", "Mode", 21},
-    };
 
 } // namespace
 
@@ -80,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_AcceptTouchEvents, true);
 
     auto *navGroup = new QButtonGroup(this);
     navGroup->setExclusive(true);
@@ -113,80 +78,34 @@ MainWindow::MainWindow(QWidget *parent)
         auto *display = findChild<NumericDisplay *>(QLatin1String(b.widgetName));
         if (!display)
             continue;
-        display->variable()->setName(QLatin1String(b.widgetName));
-        display->variable()->setType(b.type);
-        display->variable()->setMinimum(b.min);
-        display->variable()->setMaximum(b.max);
-        display->variable()->setFractional(b.fractional);
-        display->variable()->setReadAddress(b.address);
-        display->variable()->setWriteAddress(b.address);
+        display->readVariable()->setType(b.type);
+        display->writeVariable()->setType(b.type);
+        display->readVariable()->setMinimum(b.min);
+        display->writeVariable()->setMinimum(b.min);
+        display->readVariable()->setMaximum(b.max);
+        display->writeVariable()->setMaximum(b.max);
+        display->readVariable()->setFractional(b.fractional);
+        display->writeVariable()->setFractional(b.fractional);
         display->setReadOnly(b.readOnly);
     }
 
 
-    for (const ButtonBinding &b : kButtonBindings) {
-        auto *btn = findChild<MomentaryButton *>(QLatin1String(b.widgetName));
-        if (!btn)
-            continue;
-        btn->variable()->setName(QLatin1String(b.widgetName));
-        btn->variable()->setReadAddress(b.address);
-        btn->variable()->setWriteAddress(b.address);
-        btn->variable()->setReadAddressBit(b.bitIndex);
-        btn->variable()->setWriteAddressBit(b.bitIndex);
-        // auto var = model->addVar(btn->variable()->name(), btn->variable()->readAddress(),btn->variable()->rawValueSize());
-        // connect(var, &ModbusVar::valueChanged, btn->variable(),&Variable::setRawData);
-        // connect(btn->variable(),&Variable::rawValueChanged,this,[this, btn](const QVector<uint16_t> &val) {
-        //     if (!val.isEmpty())
-        //         emit model->requestWrite(btn->variable()->writeAddress(),val) ;
-        // });
-    }
-
-    for (const ButtonBinding &b : kToggleBindings) {
-        auto *btn = findChild<ToggleButton *>(QLatin1String(b.widgetName));
-        if (!btn)
-            continue;
-        btn->variable()->setName(QLatin1String(b.widgetName));
-        btn->variable()->setReadAddress(b.address);
-        btn->variable()->setWriteAddress(b.address);
-        btn->variable()->setReadAddressBit(b.bitIndex);
-        btn->variable()->setWriteAddressBit(b.bitIndex);
-        // auto var = model->addVar(btn->variable()->name(), btn->variable()->readAddress(),btn->variable()->rawValueSize());
-        // connect(var, &ModbusVar::valueChanged, btn->variable(),&Variable::setRawData);
-        // connect(btn->variable(),&Variable::rawValueChanged,this,[this, btn](const QVector<uint16_t> &val) {
-        //     if (!val.isEmpty())
-        //         emit model->requestWrite(btn->variable()->writeAddress(),val) ;
-        // });
-    }
-
-    for (const MultiStateBinding &b : kMultiStateBindings) {
-        auto *btn = findChild<MultiStateButton *>(QLatin1String(b.widgetName));
-        if (!btn)
-            continue;
-        btn->variable()->setName(QLatin1String(b.varName));
-        btn->variable()->setType(DataType::UWord);
-        btn->variable()->setMinimum(0.0f);
-        btn->variable()->setMaximum(static_cast<float>(btn->stateCount() - 1));
-        btn->variable()->setReadAddress(b.address);
-        btn->variable()->setWriteAddress(b.address);
-        // auto var = model->addVar(btn->variable()->name(), btn->variable()->readAddress(),btn->variable()->rawValueSize());
-        // connect(var, &ModbusVar::valueChanged, btn->variable(),&Variable::setRawData);
-        // connect(btn->variable(),&Variable::rawValueChanged,this,[this, btn](const QVector<uint16_t> &val) {
-        //     if (!val.isEmpty())
-        //         emit model->requestWrite(btn->variable()->writeAddress(),val) ;
-        // });
-    }
     const auto displays1 = findChildren<QWidget*>();
     for (QWidget *display : displays1) {
         if (!display)
             continue;
-        if (display->property("variable").isValid())
+        if (display->property("readVariable").isValid())
         {
-            Variable *dsp=display->property("variable").value<Variable *>();
-            auto var = model->addVar(dsp->name(), dsp->readAddress(), dsp->rawValueSize());
+            Variable *dsp=display->property("readVariable").value<Variable *>();
+            auto var = model->addVar(dsp->address(), dsp->rawValueSize());
             connect(var, &ModbusVar::valueChanged, dsp,&Variable::setRawData);
+        }
+        if (display->property("writeVariable").isValid())
+        {
+            Variable *dsp=display->property("writeVariable").value<Variable *>();
             connect(dsp, &Variable::rawValueChanged,this,[this, dsp](const QVector<uint16_t> &val) {
                 if (!val.isEmpty())
-                    emit model->requestWrite(dsp->writeAddress(),val) ;
+                    emit model->requestWrite(dsp->address(),val) ;
             });
         }
     }
@@ -217,9 +136,9 @@ void MainWindow::showNumPad()
 {
     auto *display = qobject_cast<NumericDisplay *>(sender());
     if (!display) return;
-    NumpadDialog npd(this, display->variable()->type(),
-                     display->variable()->minimum(), display->variable()->maximum(),
-                     display->variable()->fractional());
+    NumpadDialog npd(this, display->writeVariable()->type(),
+                     display->writeVariable()->minimum(), display->writeVariable()->maximum(),
+                     display->writeVariable()->fractional());
     npd.setCurrentValue(display->text());
     connect(&npd, &NumpadDialog::enter, display, &NumericDisplay::inputData);
     npd.exec();
@@ -238,3 +157,11 @@ void MainWindow::showModbusSettings()
 }
 
 
+
+void MainWindow::on_actionClose_triggered()
+{
+    MainWindow::close();
+}
+void MainWindow::contextMenuEvent(QContextMenuEvent *event) {
+    event->ignore();
+}

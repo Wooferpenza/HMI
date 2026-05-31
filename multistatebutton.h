@@ -8,12 +8,14 @@
 class MultiStateButton : public QPushButton
 {
     Q_OBJECT
-    Q_PROPERTY(Variable *variable READ variable FINAL)
+    Q_PROPERTY(Variable *readVariable READ readVariable FINAL)
+    Q_PROPERTY(Variable *writeVariable READ writeVariable FINAL)
+    Q_PROPERTY(QString readAddress READ readAddress WRITE setReadAddress NOTIFY readAddressChanged FINAL)
+    Q_PROPERTY(QString writeAddress READ writeAddress WRITE setWriteAddress NOTIFY writeAddressChanged FINAL)
     Q_PROPERTY(int stateCount READ stateCount WRITE setStateCount NOTIFY stateCountChanged FINAL)
     Q_PROPERTY(QStringList stateIconPaths READ stateIconPaths WRITE setStateIconPaths NOTIFY stateIconPathsChanged FINAL)
     Q_PROPERTY(QStringList stateTexts READ stateTexts WRITE setStateTexts NOTIFY stateTextsChanged FINAL)
     Q_PROPERTY(QString stateTextFallback READ stateTextFallback WRITE setStateTextFallback NOTIFY stateTextFallbackChanged FINAL)
-    Q_PROPERTY(int currentState READ currentState WRITE setCurrentState NOTIFY currentStateChanged FINAL)
 
 public:
     explicit MultiStateButton(QWidget *parent = nullptr);
@@ -30,17 +32,26 @@ public:
     QString stateTextFallback() const;
     void setStateTextFallback(const QString &text);
 
-    int currentState() const;
-    void setCurrentState(int state);
+    QString readAddress() const;
+    void setReadAddress(const QString &newReadAddress);
 
-    Variable *variable() const;
+    QString writeAddress() const;
+    void setWriteAddress(const QString &newWriteAddress);
+
+
+
+    Variable *readVariable() const;
+
+    Variable *writeVariable() const;
 
 signals:
     void stateCountChanged();
     void stateIconPathsChanged();
     void stateTextsChanged();
     void stateTextFallbackChanged();
-    void currentStateChanged(int state);
+    void currentStateChanged(int);
+    void readAddressChanged(uint16_t);
+    void writeAddressChanged(uint16_t);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -53,12 +64,15 @@ private:
     void applyStateVisuals();
     void ensureListLengths();
 
-    Variable *m_variable = nullptr;
     int m_stateCount = 2;
     int m_currentState = 0;
     QStringList m_iconPaths;
     QStringList m_stateTexts;
     QString m_stateTextFallback;
+    QString m_readAddress;
+    QString m_writeAddress;
+    Variable *m_readVariable = nullptr;
+    Variable *m_writeVariable = nullptr;
 };
 
 #endif // MULTISTATEBUTTON_H

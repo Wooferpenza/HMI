@@ -29,32 +29,19 @@ void Variable::setType(DataType newType)
     emit typeChanged();
 }
 
-QString Variable::name() const
-{
-    return m_name;
-}
-
-void Variable::setName(const QString &newName)
-{
-    if (m_name == newName)
-        return;
-    m_name = newName;
-    emit nameChanged();
-}
-
-uint16_t Variable::readAddressBit() const
+uint16_t Variable::addressBit() const
 {
     return m_readAddressBit;
 }
 
-void Variable::setReadAddressBit(uint16_t newBitIndex)
+void Variable::setAddressBit(uint16_t newBitIndex)
 {
     if (newBitIndex > 15)
         newBitIndex = 15;
     if (m_readAddressBit == newBitIndex)
         return;
     m_readAddressBit = newBitIndex;
-    emit readAddressBitChanged();
+    emit addressBitChanged();
 }
 
 uint16_t Variable::fractional() const
@@ -215,41 +202,15 @@ void Variable::setValue(const QVariant &val)
     emit rawValueChanged(m_rawValue);
 }
 
-uint16_t Variable::writeAddress() const
-{
-    return m_writeAddress;
-}
-
-void Variable::setWriteAddress(uint16_t newWriteAddress)
-{
-    if (m_writeAddress == newWriteAddress)
-        return;
-    m_writeAddress = newWriteAddress;
-    emit writeAddressChanged();
-}
-
-uint16_t Variable::writeAddressBit() const
-{
-    return m_writeAddressBit;
-}
-
-void Variable::setWriteAddressBit(uint16_t newWriteAddressBit)
-{
-    if (m_writeAddressBit == newWriteAddressBit)
-        return;
-    m_writeAddressBit = newWriteAddressBit;
-    emit writeAddressBitChanged();
-}
-
-uint16_t Variable::readAddress() const
+uint16_t Variable::address() const
 {
     return m_readAddress;
 }
 
-void Variable::setReadAddress(uint16_t newReadAddress)
+void Variable::setAddress(uint16_t newReadAddress)
 {
     if (m_readAddress == newReadAddress)
         return;
     m_readAddress = newReadAddress;
-    emit readAddressChanged();
+    emit addressChanged();
 }

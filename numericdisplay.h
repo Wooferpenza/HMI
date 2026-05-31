@@ -10,14 +10,18 @@ class NumericDisplay : public QLineEdit
 {
     Q_OBJECT
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly FINAL)
-    Q_PROPERTY(Variable *variable READ variable FINAL)
+    Q_PROPERTY(Variable *readVariable READ readVariable FINAL)
+    Q_PROPERTY(Variable *writeVariable READ writeVariable FINAL)
+    Q_PROPERTY(TypeData type READ type WRITE settype NOTIFY typeChanged FINAL)
     Q_PROPERTY(uint16_t readAddress READ readAddress WRITE setReadAddress NOTIFY readAddressChanged FINAL)
     Q_PROPERTY(uint16_t readAddressBit READ readAddressBit WRITE setReadAddressBit NOTIFY readAddressBitChanged FINAL)
     Q_PROPERTY(uint16_t writeAddress READ writeAddress WRITE setWriteAddress NOTIFY writeAddressChanged FINAL)
     Q_PROPERTY(uint16_t writeAddressBit READ writeAddressBit WRITE setWriteAddressBit NOTIFY writeAddressBitChanged FINAL)
 public:
+    enum  TypeData { Bit, UWord, SWord, UDWord, SDWord, Float, String };
     explicit NumericDisplay(QWidget *parent = nullptr);
-   Variable *variable() const;
+    Variable *readVariable() const;
+    Variable *writeVariable() const;
 
     bool isReadOnly() const;
     void setReadOnly(bool newReadOnly);
@@ -34,17 +38,22 @@ public:
     uint16_t writeAddressBit() const;
     void setWriteAddressBit(uint16_t newWriteAddressBit);
 
+    TypeData type() const;
+    void settype(const TypeData &newType);
+
 signals:
     void clicked();
 
 
-    void readAddressChanged();
+    void readAddressChanged(uint16_t);
 
-    void readAddressBitChanged();
+    void readAddressBitChanged(uint16_t);
 
-    void writeAddressChanged();
+    void writeAddressChanged(uint16_t);
 
-    void writeAddressBitChanged();
+    void writeAddressBitChanged(uint16_t);
+
+    void typeChanged();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -54,13 +63,14 @@ public slots:
     void displayData(const QVariant &val);
 
 private:
-    Variable *m_variable = nullptr;
+    Variable *m_readVariable = nullptr;
+    Variable *m_writeVariable = nullptr;
     bool m_readOnly;
- //   Variable *m_var;
     uint16_t m_readAddress;
     uint16_t m_readAddressBit;
     uint16_t m_writeAddress;
     uint16_t m_writeAddressBit;
+    TypeData m_type;
 };
 
 #endif // NUMERICDISPLAY_H

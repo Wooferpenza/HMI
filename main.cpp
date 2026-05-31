@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("HMI");
 
     MainWindow w;
-    w.showMaximized();
+    //w.showFullScreen();
+    w.showNormal();
     return a.exec();
 }

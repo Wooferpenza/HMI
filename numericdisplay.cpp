@@ -3,16 +3,24 @@
 
 NumericDisplay::NumericDisplay(QWidget *parent)
     : QLineEdit(parent)
-    , m_variable(new Variable(this))
+    , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
 {
-    connect(m_variable, &Variable::valueChanged, this, &NumericDisplay::displayData);
+    connect(this, &NumericDisplay::readAddressChanged, m_readVariable, &Variable::setAddress);
+    connect(this, &NumericDisplay::readAddressBitChanged, m_readVariable, &Variable::setAddressBit);
+    connect(this, &NumericDisplay::writeAddressChanged, m_writeVariable, &Variable::setAddress);
+    connect(this, &NumericDisplay::writeAddressBitChanged, m_writeVariable, &Variable::setAddressBit);
+    connect(m_readVariable, &Variable::valueChanged, this, &NumericDisplay::displayData);
 }
 
-Variable *NumericDisplay::variable() const
+Variable *NumericDisplay::readVariable() const
 {
-    return m_variable;
+    return m_readVariable;
 }
 
+Variable *NumericDisplay::writeVariable() const
+{
+    return m_writeVariable;
+}
 void NumericDisplay::mousePressEvent(QMouseEvent *event)
 {
     QLineEdit::mousePressEvent(event);
@@ -22,15 +30,15 @@ void NumericDisplay::mousePressEvent(QMouseEvent *event)
 
 void NumericDisplay::inputData(const QVariant &data)
 {
-    m_variable->setValue(data);
+    m_writeVariable->setValue(data);
 }
 
 void NumericDisplay::displayData(const QVariant &val)
 {
-    const uint16_t frac = m_variable->fractional();
+    const uint16_t frac = m_readVariable->fractional();
     QString text;
 
-    switch (m_variable->type())
+    switch (m_readVariable->type())
     {
     case DataType::Bit:
         text = val.toBool() ? QStringLiteral("1") : QStringLiteral("0");
@@ -87,7 +95,7 @@ void NumericDisplay::setReadAddress(uint16_t newReadAddress)
     if (m_readAddress == newReadAddress)
         return;
     m_readAddress = newReadAddress;
-    emit readAddressChanged();
+    emit readAddressChanged(m_readAddress);
 }
 
 uint16_t NumericDisplay::readAddressBit() const
@@ -100,7 +108,7 @@ void NumericDisplay::setReadAddressBit(uint16_t newReadAddressBit)
     if (m_readAddressBit == newReadAddressBit)
         return;
     m_readAddressBit = newReadAddressBit;
-    emit readAddressBitChanged();
+    emit readAddressBitChanged(m_readAddressBit);
 }
 
 uint16_t NumericDisplay::writeAddress() const
@@ -113,7 +121,7 @@ void NumericDisplay::setWriteAddress(uint16_t newWriteAddress)
     if (m_writeAddress == newWriteAddress)
         return;
     m_writeAddress = newWriteAddress;
-    emit writeAddressChanged();
+    emit writeAddressChanged(m_writeAddress);
 }
 
 uint16_t NumericDisplay::writeAddressBit() const
@@ -126,5 +134,18 @@ void NumericDisplay::setWriteAddressBit(uint16_t newWriteAddressBit)
     if (m_writeAddressBit == newWriteAddressBit)
         return;
     m_writeAddressBit = newWriteAddressBit;
-    emit writeAddressBitChanged();
+    emit writeAddressBitChanged(m_writeAddressBit);
+}
+
+NumericDisplay::TypeData NumericDisplay::type() const
+{
+    return m_type;
+}
+
+void NumericDisplay::settype(const TypeData &newType)
+{
+    if (m_type == newType)
+        return;
+    m_type = newType;
+    emit typeChanged();
 }

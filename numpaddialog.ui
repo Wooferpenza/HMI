@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>350</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,19 +22,22 @@
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>350</height>
+    <height>360</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>500</width>
-    <height>350</height>
+    <height>360</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Цифровая клавиатура</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <property name="spacing">
+    <number>5</number>
+   </property>
    <property name="leftMargin">
     <number>5</number>
    </property>
@@ -50,16 +53,28 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="sizeConstraint">
-      <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
+      <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
      </property>
      <item>
       <widget class="QLineEdit" name="lineEdit">
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <pointsize>24</pointsize>
         </font>
        </property>
       </widget>
@@ -74,7 +89,8 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>18</pointsize>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -84,17 +100,21 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
-       <property name="horizontalSpacing">
-        <number>10</number>
-       </property>
-       <property name="verticalSpacing">
+       <property name="spacing">
         <number>7</number>
        </property>
        <item row="0" column="0">
         <widget class="QPushButton" name="pushButton1">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -104,9 +124,16 @@
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="pushButton2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -116,9 +143,16 @@
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="pushButton3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -128,9 +162,16 @@
        </item>
        <item row="0" column="3">
         <widget class="QPushButton" name="pushButtonDEL">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -140,9 +181,16 @@
        </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="pushButton4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -152,9 +200,16 @@
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="pushButton5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -164,9 +219,16 @@
        </item>
        <item row="1" column="2">
         <widget class="QPushButton" name="pushButton6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -178,9 +240,16 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QPushButton" name="pushButtonLeft">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="font">
             <font>
-             <pointsize>14</pointsize>
+             <pointsize>20</pointsize>
+             <bold>true</bold>
             </font>
            </property>
            <property name="text">
@@ -190,9 +259,16 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonRight">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="font">
             <font>
-             <pointsize>14</pointsize>
+             <pointsize>20</pointsize>
+             <bold>true</bold>
             </font>
            </property>
            <property name="text">
@@ -204,9 +280,16 @@
        </item>
        <item row="2" column="0">
         <widget class="QPushButton" name="pushButton7">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -216,9 +299,16 @@
        </item>
        <item row="2" column="1">
         <widget class="QPushButton" name="pushButton8">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -228,9 +318,16 @@
        </item>
        <item row="2" column="2">
         <widget class="QPushButton" name="pushButton9">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -240,9 +337,16 @@
        </item>
        <item row="2" column="3">
         <widget class="QPushButton" name="pushButtonCLR">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -252,9 +356,16 @@
        </item>
        <item row="3" column="0">
         <widget class="QPushButton" name="pushButtonPlusMinus">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -264,9 +375,16 @@
        </item>
        <item row="3" column="1">
         <widget class="QPushButton" name="pushButton0">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -276,9 +394,16 @@
        </item>
        <item row="3" column="2">
         <widget class="QPushButton" name="pushButtonDot">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -288,9 +413,16 @@
        </item>
        <item row="3" column="3">
         <widget class="QPushButton" name="pushButtonENT">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">

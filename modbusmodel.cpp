@@ -4,9 +4,9 @@ ModbusModel::ModbusModel(QObject *parent)
     : QObject(parent)
 {}
 
-ModbusVar *ModbusModel::addVar(const QString &name, uint16_t address, uint16_t size)
+ModbusVar *ModbusModel::addVar( uint16_t address, uint16_t size)
 {
-    auto *var = new ModbusVar(name, address, size, this);
+    auto *var = new ModbusVar(address, size, this);
     m_readTable.append(var);
     sortReadTable();
     return var;

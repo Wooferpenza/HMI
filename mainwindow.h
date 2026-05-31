@@ -24,10 +24,13 @@ private slots:
     void showNumPad();
     void showModbusSettings();
 
+    void on_actionClose_triggered();
+
 private:
     Ui::MainWindow *ui;
     ModbusModel *model = nullptr;
     ModbusManager *manager = nullptr;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 };
 

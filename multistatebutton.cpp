@@ -1,27 +1,29 @@
 #include "multistatebutton.h"
-
+#include <QRegularExpression>
+#include <QtGlobal>
 #include <QResizeEvent>
 
 MultiStateButton::MultiStateButton(QWidget *parent)
     : QPushButton(parent)
-    , m_variable(new Variable(this))
+    , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
 {
-    m_variable->setType(DataType::UWord);
-    m_variable->setMinimum(0);
-    m_variable->setMaximum(1);
+
+
+    m_readVariable->setType(DataType::UWord);
+    m_readVariable->setMinimum(0);
+    m_readVariable->setMaximum(1);
+    m_writeVariable->setType(DataType::UWord);
+    m_writeVariable->setMinimum(0);
+    m_writeVariable->setMaximum(1);
     ensureListLengths();
 
-    connect(m_variable, &Variable::valueChanged,
-            this, &MultiStateButton::onModbusValueChanged);
-    connect(this, &QPushButton::clicked,
-            this, &MultiStateButton::onClicked);
+    connect(this, &MultiStateButton::readAddressChanged, m_readVariable, &Variable::setAddress);
+    connect(this, &MultiStateButton::writeAddressChanged, m_writeVariable, &Variable::setAddress);
+
+    connect(m_readVariable, &Variable::valueChanged,this, &MultiStateButton::onModbusValueChanged);
+    connect(this, &QPushButton::clicked, this, &MultiStateButton::onClicked);
 
     applyStateVisuals();
-}
-
-Variable *MultiStateButton::variable() const
-{
-    return m_variable;
 }
 
 int MultiStateButton::stateCount() const
@@ -37,7 +39,7 @@ void MultiStateButton::setStateCount(int count)
 
     m_stateCount = count;
     ensureListLengths();
-    m_variable->setMaximum(static_cast<float>(m_stateCount - 1));
+    m_readVariable->setMaximum(static_cast<float>(m_stateCount - 1));
 
     if (m_currentState >= m_stateCount)
         m_currentState = m_stateCount - 1;
@@ -86,23 +88,6 @@ void MultiStateButton::setStateTextFallback(const QString &text)
     emit stateTextFallbackChanged();
 }
 
-int MultiStateButton::currentState() const
-{
-    return m_currentState;
-}
-
-void MultiStateButton::setCurrentState(int state)
-{
-    state = qBound(0, state, m_stateCount - 1);
-    if (m_currentState == state)
-        return;
-
-    m_currentState = state;
-    applyStateVisuals();
-    m_variable->setValue(static_cast<uint>(m_currentState));
-    emit currentStateChanged(m_currentState);
-}
-
 void MultiStateButton::resizeEvent(QResizeEvent *event)
 {
     QPushButton::resizeEvent(event);
@@ -124,10 +109,10 @@ void MultiStateButton::onModbusValueChanged(const QVariant &val)
 
 void MultiStateButton::onClicked()
 {
-    m_currentState = (m_currentState + 1) % m_stateCount;
-    applyStateVisuals();
-    m_variable->setValue(static_cast<uint>(m_currentState));
-    emit currentStateChanged(m_currentState);
+    int currentState = (m_currentState + 1) % m_stateCount;
+    //applyStateVisuals();
+    m_writeVariable->setValue(static_cast<uint>(currentState));
+   // emit currentStateChanged(m_currentState);
 }
 
 void MultiStateButton::applyStateVisuals()
@@ -155,3 +140,49 @@ void MultiStateButton::ensureListLengths()
     while (m_stateTexts.size() > m_stateCount)
         m_stateTexts.removeLast();
 }
+
+QString MultiStateButton::readAddress() const
+{
+    return m_readAddress;
+}
+
+void MultiStateButton::setReadAddress(const QString &newReadAddress)
+{
+    if (m_readAddress == newReadAddress)
+        return;
+    m_readAddress = newReadAddress;
+    static const QRegularExpression regex("^D\\d+$");
+    if(!regex.match(m_readAddress).hasMatch())
+    {qFatal("Неверный адрес для чтения %s", this->objectName().toUtf8().constData()) ; return; }
+
+
+    emit readAddressChanged(m_readAddress.sliced(1).toInt());
+}
+
+QString MultiStateButton::writeAddress() const
+{
+    return m_writeAddress;
+}
+
+void MultiStateButton::setWriteAddress(const QString &newWriteAddress)
+{
+    if (m_writeAddress == newWriteAddress)
+        return;
+    m_writeAddress = newWriteAddress;
+    static const QRegularExpression regex("^D\\d+$");
+    if(!regex.match(m_writeAddress).hasMatch())
+    {qFatal("Неверный адрес для записи %s", this->objectName().toUtf8().constData()) ; return; }
+    emit writeAddressChanged(m_writeAddress.sliced(1).toInt());
+}
+
+Variable *MultiStateButton::readVariable() const
+{
+    return m_readVariable;
+}
+
+Variable *MultiStateButton::writeVariable() const
+{
+    return m_writeVariable;
+}
+
+
