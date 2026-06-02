@@ -244,7 +244,7 @@
            <bool>false</bool>
           </property>
           <property name="format" stdset="0">
-           <string/>
+           <string>UWord</string>
           </property>
           <property name="fractional" stdset="0">
            <UInt>0</UInt>
@@ -260,39 +260,6 @@
           </property>
           <property name="writeAddress" stdset="0">
            <string>D0</string>
-          </property>
-         </widget>
-         <widget class="NumericDisplay" name="lineEditCounter">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>80</y>
-            <width>113</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-           </font>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::FocusPolicy::NoFocus</enum>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignmentFlag::AlignCenter</set>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-          <property name="readAddress" stdset="0">
-           <UInt>0</UInt>
-          </property>
-          <property name="writeAddress" stdset="0">
-           <UInt>0</UInt>
-          </property>
-          <property name="TypeData" stdset="0">
-           <number>0</number>
           </property>
          </widget>
          <widget class="MomentaryButton" name="StartButton">
@@ -447,10 +414,16 @@ QGroupBox::title {
                 <bool>true</bool>
                </property>
                <property name="readAddress" stdset="0">
-                <UInt>0</UInt>
+                <string>D34</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
+                <string/>
+               </property>
+               <property name="format" stdset="0">
+                <string>Float</string>
+               </property>
+               <property name="fractional" stdset="0">
+                <UInt>2</UInt>
                </property>
               </widget>
              </item>
@@ -489,6 +462,18 @@ QGroupBox::title {
                <property name="readOnly">
                 <bool>true</bool>
                </property>
+               <property name="format" stdset="0">
+                <string>Float</string>
+               </property>
+               <property name="fractional" stdset="0">
+                <UInt>2</UInt>
+               </property>
+               <property name="readAddress" stdset="0">
+                <string>D32</string>
+               </property>
+               <property name="writeAddress" stdset="0">
+                <string/>
+               </property>
               </widget>
              </item>
              <item row="5" column="0">
@@ -518,7 +503,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>30</UInt>
+                <UInt>38</UInt>
                </property>
                <property name="writeAddressBit" stdset="0">
                 <UInt>0</UInt>
@@ -561,16 +546,16 @@ QGroupBox::title {
                 <bool>true</bool>
                </property>
                <property name="readAddress" stdset="0">
-                <string/>
+                <string>D46</string>
                </property>
                <property name="writeAddress" stdset="0">
                 <string/>
                </property>
                <property name="format" stdset="0">
-                <string/>
+                <string>Float</string>
                </property>
                <property name="fractional" stdset="0">
-                <UInt>0</UInt>
+                <UInt>2</UInt>
                </property>
               </widget>
              </item>
@@ -644,10 +629,16 @@ QGroupBox::title {
                 <bool>true</bool>
                </property>
                <property name="readAddress" stdset="0">
-                <UInt>0</UInt>
+                <string>D48</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
+                <string/>
+               </property>
+               <property name="format" stdset="0">
+                <string>Float</string>
+               </property>
+               <property name="fractional" stdset="0">
+                <UInt>2</UInt>
                </property>
               </widget>
              </item>
@@ -718,10 +709,16 @@ QGroupBox::title {
                 <bool>true</bool>
                </property>
                <property name="readAddress" stdset="0">
-                <UInt>0</UInt>
+                <string>D62</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
+                <string/>
+               </property>
+               <property name="format" stdset="0">
+                <string>Float</string>
+               </property>
+               <property name="fractional" stdset="0">
+                <UInt>2</UInt>
                </property>
               </widget>
              </item>
@@ -885,13 +882,13 @@ QGroupBox::title {
                 </stringlist>
                </property>
                <property name="readAddress" stdset="0">
-                <string/>
+                <string>D20</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <string/>
+                <string>D20</string>
                </property>
                <property name="format" stdset="0">
-                <string/>
+                <string>UWord</string>
                </property>
               </widget>
              </item>
@@ -932,10 +929,10 @@ QGroupBox::title {
                 </stringlist>
                </property>
                <property name="readAddress" stdset="0">
-                <string>D0</string>
+                <string>D21</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <string>D0</string>
+                <string>D21</string>
                </property>
                <property name="format" stdset="0">
                 <string>UWord</string>
@@ -1132,6 +1129,9 @@ QGroupBox::title {
                <property name="stateTexts" stdset="0">
                 <stringlist/>
                </property>
+               <property name="readAddress" stdset="0">
+                <string>D10</string>
+               </property>
               </widget>
              </item>
              <item>
@@ -1237,10 +1237,16 @@ QGroupBox::title {
                 <bool>true</bool>
                </property>
                <property name="readAddress" stdset="0">
-                <UInt>1100</UInt>
+                <string>D1100</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>1100</UInt>
+                <string>D1100</string>
+               </property>
+               <property name="format" stdset="0">
+                <string>Float</string>
+               </property>
+               <property name="fractional" stdset="0">
+                <UInt>0</UInt>
                </property>
               </widget>
              </item>
@@ -1446,7 +1452,7 @@ QGroupBox::title {
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">
