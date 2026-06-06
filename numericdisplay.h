@@ -10,7 +10,6 @@
 class NumericDisplay : public QLineEdit, public VariableProperty<NumericDisplay>
 {
     Q_OBJECT
-    Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly FINAL)
     Q_PROPERTY(Variable *readVariable READ readVariable FINAL)
     Q_PROPERTY(Variable *writeVariable READ writeVariable FINAL)
     IMPLEMENT_SHARED_PROPERTY(QString, format);
@@ -24,9 +23,6 @@ public:
     explicit NumericDisplay(QWidget *parent = nullptr);
     Variable *readVariable() const;
     Variable *writeVariable() const;
-
-    bool isReadOnly() const;
-    void setReadOnly(bool newReadOnly);
 
 signals:
     void clicked();

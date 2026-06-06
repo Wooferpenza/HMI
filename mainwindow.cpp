@@ -9,35 +9,6 @@
 #include <QButtonGroup>
 #include <QSettings>
 
-namespace {
-
-// Привязка виджет → Modbus: имя виджета (objectName в UI), имя переменной, адрес регистра.
-// Опционально: тип, формат, лимиты — задаются только если нужны не по умолчанию.
-struct VariableBinding {
-    const char *widgetName;
-    quint16 address;
-    Variable::DataFormat type = Variable::DataFormat::UWord;
-    float min = 0.0f;
-    float max = 100.0f;
-    uint fractional = 0;
-    bool readOnly = false;
-};
-
-const VariableBinding kVariableBindings[] = {
-    {"lineEdit", 100, Variable::DataFormat::UWord, 0, 65535, 1,  false},
-    {"lineEditCounter", 102, Variable::DataFormat::Float, -10.0f, 65535.0f, 2,  false},
-    {"xAbsDisplay", 46,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
-    {"xRelDisplay", 48,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
-    {"yAbsDisplay", 32,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
-    {"yRelDisplay", 34,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
-    {"aRelDisplay", 62,  Variable::DataFormat::Float, -10000.0f, 10000.0f, 2,  true},
-    {"cutSpeedDisplay", 1100,  Variable::DataFormat::Float, 0.0f, 1000.0f, 0,  false},
-    };
-
-
-
-
-} // namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -73,23 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
     QSettings s;
     ModbusSettings modbusCfg = ModbusSettings::load(s);
     model = new ModbusModel(this);
-
-    for (const VariableBinding &b : kVariableBindings) {
-        auto *display = findChild<NumericDisplay *>(QLatin1String(b.widgetName));
-        if (!display)
-            continue;
-        display->readVariable()->setType(b.type);
-        display->writeVariable()->setType(b.type);
-        display->readVariable()->setMinimum(b.min);
-        display->writeVariable()->setMinimum(b.min);
-        display->readVariable()->setMaximum(b.max);
-        display->writeVariable()->setMaximum(b.max);
-        display->readVariable()->setFractional(b.fractional);
-        display->writeVariable()->setFractional(b.fractional);
-        display->setReadOnly(b.readOnly);
-    }
-
-
     const auto displays1 = findChildren<QWidget*>();
     for (QWidget *display : displays1) {
         if (!display)
