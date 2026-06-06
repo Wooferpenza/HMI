@@ -278,10 +278,7 @@
            <string>PushButton</string>
           </property>
           <property name="writeAddress" stdset="0">
-           <UInt>0</UInt>
-          </property>
-          <property name="writeAddressBit" stdset="0">
-           <UInt>0</UInt>
+           <string/>
           </property>
          </widget>
          <widget class="QGroupBox" name="CoordinateBox">
@@ -425,6 +422,12 @@ QGroupBox::title {
                <property name="fractional" stdset="0">
                 <UInt>2</UInt>
                </property>
+               <property name="minimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>10000.000000000000000</double>
+               </property>
               </widget>
              </item>
              <item row="3" column="2">
@@ -474,6 +477,12 @@ QGroupBox::title {
                <property name="writeAddress" stdset="0">
                 <string/>
                </property>
+               <property name="minimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>10000.000000000000000</double>
+               </property>
               </widget>
              </item>
              <item row="5" column="0">
@@ -503,10 +512,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>38</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>0</UInt>
+                <string/>
                </property>
               </widget>
              </item>
@@ -557,6 +563,12 @@ QGroupBox::title {
                <property name="fractional" stdset="0">
                 <UInt>2</UInt>
                </property>
+               <property name="minimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>10000.000000000000000</double>
+               </property>
               </widget>
              </item>
              <item row="5" column="2">
@@ -586,10 +598,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>24</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>0</UInt>
+                <string/>
                </property>
               </widget>
              </item>
@@ -639,6 +648,12 @@ QGroupBox::title {
                </property>
                <property name="fractional" stdset="0">
                 <UInt>2</UInt>
+               </property>
+               <property name="minimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>10000.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -720,6 +735,12 @@ QGroupBox::title {
                <property name="fractional" stdset="0">
                 <UInt>2</UInt>
                </property>
+               <property name="minimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>10000.000000000000000</double>
+               </property>
               </widget>
              </item>
              <item row="5" column="3">
@@ -749,10 +770,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>52</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>0</UInt>
+                <string/>
                </property>
               </widget>
              </item>
@@ -1102,10 +1120,7 @@ QGroupBox::title {
                 <string>Стоп</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>1</UInt>
+                <string>D0.1</string>
                </property>
               </widget>
              </item>
@@ -1155,10 +1170,7 @@ QGroupBox::title {
                 <string>Пуск</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>0</UInt>
+                <string>D0.0</string>
                </property>
               </widget>
              </item>
@@ -1234,7 +1246,7 @@ QGroupBox::title {
                 <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="readAddress" stdset="0">
                 <string>D1100</string>
@@ -1247,6 +1259,12 @@ QGroupBox::title {
                </property>
                <property name="fractional" stdset="0">
                 <UInt>0</UInt>
+               </property>
+               <property name="minimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>2000.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -1332,10 +1350,7 @@ QGroupBox::title {
                 <string>Вверх</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>3</UInt>
+                <string>D0.3</string>
                </property>
               </widget>
              </item>
@@ -1360,10 +1375,7 @@ QGroupBox::title {
                 <string>Вниз</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <UInt>0</UInt>
-               </property>
-               <property name="writeAddressBit" stdset="0">
-                <UInt>2</UInt>
+                <string>D0.2</string>
                </property>
               </widget>
              </item>
@@ -1452,7 +1464,7 @@ QGroupBox::title {
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">

@@ -12,10 +12,6 @@ class ToggleButton : public QPushButton, public VariableProperty<ToggleButton>
     Q_OBJECT
     Q_PROPERTY(Variable *readVariable READ readVariable FINAL)
     Q_PROPERTY(Variable *writeVariable READ writeVariable FINAL)
-    IMPLEMENT_SHARED_PROPERTY(QString, format);
-    IMPLEMENT_SHARED_PROPERTY(uint16_t, fractional);
-    IMPLEMENT_SHARED_PROPERTY(float, minimum);
-    IMPLEMENT_SHARED_PROPERTY(float, maximum);
     IMPLEMENT_SHARED_PROPERTY(QString, readAddress);
     IMPLEMENT_SHARED_PROPERTY(QString, writeAddress);
     Q_PROPERTY(QStringList stateTexts READ stateTexts WRITE setStateTexts NOTIFY stateTextsChanged FINAL)

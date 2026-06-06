@@ -5,14 +5,6 @@ ToggleButton::ToggleButton(QWidget *parent)
     , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
 {
     setCheckable(true);
-    connect(this, &ToggleButton::formatChanged, m_readVariable, &Variable::setFormat);
-    connect(this, &ToggleButton::formatChanged, m_writeVariable, &Variable::setFormat);
-    connect(this, &ToggleButton::fractionalChanged, m_readVariable, &Variable::setFractional);
-    connect(this, &ToggleButton::fractionalChanged, m_writeVariable, &Variable::setFractional);
-    connect(this, &ToggleButton::minimumChanged, m_readVariable, &Variable::setMinimum);
-    connect(this, &ToggleButton::minimumChanged, m_writeVariable, &Variable::setMinimum);
-    connect(this, &ToggleButton::maximumChanged, m_readVariable, &Variable::setMaximum);
-    connect(this, &ToggleButton::maximumChanged, m_writeVariable, &Variable::setMaximum);
     connect(this, &ToggleButton::readAddressChanged, m_readVariable, &Variable::setAddressStr);
     connect(this, &ToggleButton::writeAddressChanged, m_writeVariable, &Variable::setAddressStr);
 

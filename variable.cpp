@@ -210,8 +210,6 @@ void Variable::onSetFormat()
 
 }
 
-
-
 uint16_t Variable::address() const
 {
     return m_address;
@@ -244,8 +242,10 @@ void Variable::setFormat( QString newFormat)
 void Variable::setAddressStr(const QString &newAddressStr)
 {
     m_addressStr = newAddressStr;
-    static const QRegularExpression regex("^D\\d+$");
+    static const QRegularExpression regex("^D\\d+$|^D\\d\\.\\d+$");
     if(!regex.match(m_addressStr).hasMatch())
     {qFatal("Неверный %s address %s", this->objectName().toUtf8().constData(),this->parent()->objectName().toUtf8().constData()) ; return; }
-    m_address = m_addressStr.sliced(1).toInt();
+    auto adrlist=m_addressStr.sliced(1).split(".");
+    if (adrlist.size()>0) m_address = adrlist.at(0).toInt();
+    if (adrlist.size()>1) m_addressBit = adrlist.at(1).toInt();
 }

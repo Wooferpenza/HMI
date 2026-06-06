@@ -7,14 +7,6 @@ MultiStateButton::MultiStateButton(QWidget *parent)
     : QPushButton(parent)
     , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
 {
-    connect(this, &MultiStateButton::formatChanged, m_readVariable, &Variable::setFormat);
-    connect(this, &MultiStateButton::formatChanged, m_writeVariable, &Variable::setFormat);
-    connect(this, &MultiStateButton::fractionalChanged, m_readVariable, &Variable::setFractional);
-    connect(this, &MultiStateButton::fractionalChanged, m_writeVariable, &Variable::setFractional);
-    connect(this, &MultiStateButton::minimumChanged, m_readVariable, &Variable::setMinimum);
-    connect(this, &MultiStateButton::minimumChanged, m_writeVariable, &Variable::setMinimum);
-    connect(this, &MultiStateButton::maximumChanged, m_readVariable, &Variable::setMaximum);
-    connect(this, &MultiStateButton::maximumChanged, m_writeVariable, &Variable::setMaximum);
     connect(this, &MultiStateButton::readAddressChanged, m_readVariable, &Variable::setAddressStr);
     connect(this, &MultiStateButton::writeAddressChanged, m_writeVariable, &Variable::setAddressStr);
 
