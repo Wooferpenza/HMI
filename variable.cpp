@@ -232,7 +232,7 @@ void Variable::setFormat( QString newFormat)
     int value = metaEnum.keyToValue(newFormat.toUtf8().constData(), &ok);
 
     if (ok) {
-        Variable::DataFormat m_type  = static_cast<Variable::DataFormat>(value);
+        setType( static_cast<Variable::DataFormat>(value));
     } else {
         qFatal("Неверный format %s", this->parent()->objectName().toUtf8().constData());
     }
