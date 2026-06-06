@@ -73,7 +73,7 @@ public slots:
     void setRawData(const QVector<uint16_t> &raw);
     void setValue(const QVariant &val);
     void onSetFormat();
-      void setFormat(QString newFormat);
+    void setFormat(QString newFormat);
 };
 
 #endif // VARIABLE_H

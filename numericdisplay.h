@@ -37,7 +37,7 @@ public slots:
 private:
     Variable *m_readVariable = nullptr;
     Variable *m_writeVariable = nullptr;
-    bool m_readOnly;
+
 };
 
 #endif // NUMERICDISPLAY_H

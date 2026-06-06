@@ -512,7 +512,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <string/>
+                <string>D38.0</string>
                </property>
               </widget>
              </item>
@@ -598,7 +598,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <string/>
+                <string>D24.0</string>
                </property>
               </widget>
              </item>
@@ -770,7 +770,7 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
-                <string/>
+                <string>D52.0</string>
                </property>
               </widget>
              </item>

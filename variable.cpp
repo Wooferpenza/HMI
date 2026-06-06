@@ -242,7 +242,7 @@ void Variable::setFormat( QString newFormat)
 void Variable::setAddressStr(const QString &newAddressStr)
 {
     m_addressStr = newAddressStr;
-    static const QRegularExpression regex("^D\\d+$|^D\\d\\.\\d+$");
+    static const QRegularExpression regex("^D\\d+$|^D\\d+\\.\\d+$");
     if(!regex.match(m_addressStr).hasMatch())
     {qFatal("Неверный %s address %s", this->objectName().toUtf8().constData(),this->parent()->objectName().toUtf8().constData()) ; return; }
     auto adrlist=m_addressStr.sliced(1).split(".");

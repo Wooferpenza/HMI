@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     QSettings s;
     ModbusSettings modbusCfg = ModbusSettings::load(s);
     model = new ModbusModel(this);
+
     const auto displays1 = findChildren<QWidget*>();
     for (QWidget *display : displays1) {
         if (!display)
