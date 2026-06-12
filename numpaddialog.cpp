@@ -43,7 +43,8 @@ void NumpadDialog::setRange(float min, float max)
 {
     m_minimum = min;
     m_maximum = max;
-    ui->label->setText(QString::number(m_minimum) + " ~ " + QString::number(m_maximum));
+    ui->label->setText(QString::number(m_minimum,'a',m_fractional) + " ~ " + QString::number(m_maximum,'a',m_fractional));
+
 }
 
 void NumpadDialog::setType(Variable::DataFormat type)
