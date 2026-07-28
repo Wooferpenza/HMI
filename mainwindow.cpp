@@ -8,7 +8,7 @@
 #include "ui_mainwindow.h"
 #include <QButtonGroup>
 #include <QSettings>
-
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -120,3 +120,15 @@ void MainWindow::on_actionClose_triggered()
 void MainWindow::contextMenuEvent(QContextMenuEvent *event) {
     event->ignore();
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+     MainWindow::close();
+    // 2. Запускаем системную команду на выключение
+#if defined(Q_OS_WIN)
+//    QProcess::startDetached("shutdown -s -t 0");
+#elif defined(Q_OS_UNIX)
+    QProcess::startDetached("shutdown -P now");
+#endif
+}
+

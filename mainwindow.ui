@@ -189,6 +189,31 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Выход</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -225,7 +250,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -233,7 +258,7 @@
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -735,6 +760,61 @@ QGroupBox::title {
                </property>
               </widget>
              </item>
+             <item row="3" column="3">
+              <widget class="NumericDisplay" name="aRelDisplay_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>22</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="mouseTracking">
+                <bool>false</bool>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::NoFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="readAddress" stdset="0">
+                <string>D81</string>
+               </property>
+               <property name="writeAddress" stdset="0">
+                <string/>
+               </property>
+               <property name="format" stdset="0">
+                <string>Float</string>
+               </property>
+               <property name="fractional" stdset="0">
+                <UInt>1</UInt>
+               </property>
+               <property name="minimum" stdset="0">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum" stdset="0">
+                <double>10000.000000000000000</double>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -750,7 +830,7 @@ QGroupBox::title {
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -758,7 +838,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -840,7 +920,7 @@ QGroupBox::title {
                </property>
                <property name="font">
                 <font>
-                 <pointsize>20</pointsize>
+                 <pointsize>22</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -957,14 +1037,14 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>460</x>
-            <y>110</y>
+            <y>100</y>
             <width>295</width>
             <height>205</height>
            </rect>
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -972,7 +1052,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -1026,7 +1106,7 @@ QGroupBox::title {
                </property>
                <property name="font">
                 <font>
-                 <pointsize>22</pointsize>
+                 <pointsize>18</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1076,7 +1156,7 @@ QGroupBox::title {
                </property>
                <property name="font">
                 <font>
-                 <pointsize>22</pointsize>
+                 <pointsize>18</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1146,7 +1226,7 @@ QGroupBox::title {
                </property>
                <property name="font">
                 <font>
-                 <pointsize>24</pointsize>
+                 <pointsize>22</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1178,10 +1258,10 @@ QGroupBox::title {
                 <UInt>0</UInt>
                </property>
                <property name="minimum" stdset="0">
-                <double>0.000000000000000</double>
+                <double>500.000000000000000</double>
                </property>
                <property name="maximum" stdset="0">
-                <double>2000.000000000000000</double>
+                <double>3000.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -1200,7 +1280,7 @@ QGroupBox::title {
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -1208,7 +1288,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -1256,7 +1336,7 @@ QGroupBox::title {
                </property>
                <property name="font">
                 <font>
-                 <pointsize>22</pointsize>
+                 <pointsize>18</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1281,7 +1361,7 @@ QGroupBox::title {
                </property>
                <property name="font">
                 <font>
-                 <pointsize>22</pointsize>
+                 <pointsize>18</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1311,7 +1391,7 @@ QGroupBox::title {
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -1319,7 +1399,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -1399,7 +1479,7 @@ QGroupBox::title {
              </property>
              <property name="font">
               <font>
-               <pointsize>22</pointsize>
+               <pointsize>18</pointsize>
                <bold>true</bold>
               </font>
              </property>
@@ -1420,7 +1500,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>765</x>
-            <y>110</y>
+            <y>100</y>
             <width>155</width>
             <height>205</height>
            </rect>
@@ -1435,7 +1515,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -1545,13 +1625,13 @@ QGroupBox::title {
            <rect>
             <x>5</x>
             <y>100</y>
-            <width>451</width>
-            <height>252</height>
+            <width>445</width>
+            <height>247</height>
            </rect>
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -1559,7 +1639,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -1580,6 +1660,21 @@ QGroupBox::title {
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="horizontalSpacing">
+            <number>5</number>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_6">
              <property name="sizePolicy">
@@ -1611,37 +1706,6 @@ QGroupBox::title {
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_8">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>14</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LayoutDirection::LeftToRight</enum>
-             </property>
-             <property name="text">
-              <string>Текущая</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="0">
             <widget class="NumericDisplay" name="segmensOfNumberDisplay">
              <property name="sizePolicy">
@@ -1654,6 +1718,12 @@ QGroupBox::title {
               <size>
                <width>120</width>
                <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>141</width>
+               <height>16777215</height>
               </size>
              </property>
              <property name="font">
@@ -1698,140 +1768,127 @@ QGroupBox::title {
             </widget>
            </item>
            <item row="1" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <property name="spacing">
-              <number>5</number>
+            <widget class="MomentaryButton" name="decCurrentSegmentButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="sizeConstraint">
-              <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
              </property>
-             <property name="leftMargin">
-              <number>0</number>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
-             <item>
-              <widget class="MomentaryButton" name="decCurrentSegmentButton">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>18</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::FocusPolicy::NoFocus</enum>
-               </property>
-               <property name="text">
-                <string>&lt;</string>
-               </property>
-               <property name="writeAddress" stdset="0">
-                <string>D0.7</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="NumericDisplay" name="currentSegmentDisplay">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>120</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>22</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="mouseTracking">
-                <bool>false</bool>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::FocusPolicy::NoFocus</enum>
-               </property>
-               <property name="contextMenuPolicy">
-                <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignCenter</set>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="readAddress" stdset="0">
-                <string>D1104</string>
-               </property>
-               <property name="writeAddress" stdset="0">
-                <string>D1104</string>
-               </property>
-               <property name="format" stdset="0">
-                <string>UWord</string>
-               </property>
-               <property name="fractional" stdset="0">
-                <UInt>0</UInt>
-               </property>
-               <property name="minimum" stdset="0">
-                <double>-10000.000000000000000</double>
-               </property>
-               <property name="maximum" stdset="0">
-                <double>10000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="MomentaryButton" name="incCurrentSegmentButton">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>18</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::FocusPolicy::NoFocus</enum>
-               </property>
-               <property name="text">
-                <string>&gt;</string>
-               </property>
-               <property name="writeAddress" stdset="0">
-                <string>D0.6</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="text">
+              <string>&lt;</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D0.7</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="NumericDisplay" name="currentSegmentDisplay">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D1104</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D1104</string>
+             </property>
+             <property name="format" stdset="0">
+              <string>UWord</string>
+             </property>
+             <property name="fractional" stdset="0">
+              <UInt>0</UInt>
+             </property>
+             <property name="minimum" stdset="0">
+              <double>-10000.000000000000000</double>
+             </property>
+             <property name="maximum" stdset="0">
+              <double>10000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="MomentaryButton" name="incCurrentSegmentButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="text">
+              <string>&gt;</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D0.6</string>
+             </property>
+            </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_9">
@@ -1878,6 +1935,12 @@ QGroupBox::title {
                <height>60</height>
               </size>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>141</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="font">
               <font>
                <pointsize>22</pointsize>
@@ -1919,6 +1982,80 @@ QGroupBox::title {
              </property>
             </widget>
            </item>
+           <item row="3" column="1" colspan="2">
+            <widget class="ToggleButton" name="calibrationRunToggle_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>141</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="stateTexts" stdset="0">
+              <stringlist>
+               <string>Перейти</string>
+               <string>Перейти</string>
+              </stringlist>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D0.14</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D0.14</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" colspan="3">
+            <widget class="QLabel" name="label_8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LayoutDirection::LeftToRight</enum>
+             </property>
+             <property name="text">
+              <string>Текущая</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
          <widget class="QGroupBox" name="PassBox">
@@ -1926,13 +2063,13 @@ QGroupBox::title {
            <rect>
             <x>5</x>
             <y>345</y>
-            <width>451</width>
+            <width>445</width>
             <height>365</height>
            </rect>
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -1940,7 +2077,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -1961,6 +2098,21 @@ QGroupBox::title {
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_10">
              <property name="sizePolicy">
@@ -2066,13 +2218,13 @@ QGroupBox::title {
              </property>
              <property name="minimumSize">
               <size>
-               <width>61</width>
+               <width>60</width>
                <height>61</height>
               </size>
              </property>
              <property name="font">
               <font>
-               <pointsize>18</pointsize>
+               <pointsize>22</pointsize>
                <bold>true</bold>
               </font>
              </property>
@@ -2097,7 +2249,7 @@ QGroupBox::title {
              </property>
              <property name="minimumSize">
               <size>
-               <width>120</width>
+               <width>130</width>
                <height>61</height>
               </size>
              </property>
@@ -2164,7 +2316,7 @@ QGroupBox::title {
              </property>
              <property name="font">
               <font>
-               <pointsize>18</pointsize>
+               <pointsize>22</pointsize>
                <bold>true</bold>
               </font>
              </property>
@@ -2438,43 +2590,6 @@ QGroupBox::title {
              </property>
             </widget>
            </item>
-           <item row="5" column="1" colspan="2">
-            <widget class="ToggleButton" name="calibrationRunToggle_4">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>14</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::FocusPolicy::NoFocus</enum>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <property name="stateTexts" stdset="0">
-              <stringlist>
-               <string>В начало</string>
-               <string>В начало</string>
-              </stringlist>
-             </property>
-             <property name="readAddress" stdset="0">
-              <string>D0.10</string>
-             </property>
-             <property name="writeAddress" stdset="0">
-              <string>D0.10</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="1" colspan="4">
             <widget class="QLabel" name="label_11">
              <property name="sizePolicy">
@@ -2513,13 +2628,13 @@ QGroupBox::title {
            <rect>
             <x>5</x>
             <y>-10</y>
-            <width>451</width>
-            <height>115</height>
+            <width>445</width>
+            <height>111</height>
            </rect>
           </property>
           <property name="font">
            <font>
-            <pointsize>20</pointsize>
+            <pointsize>18</pointsize>
             <bold>true</bold>
            </font>
           </property>
@@ -2527,7 +2642,7 @@ QGroupBox::title {
            <string notr="true">QGroupBox {
     border: 2px solid #000000; /* 3px — толщина линии, solid — сплошная, дальше цвет */
     border-radius: 5px;       /* Скругление углов (можно убрать) */
-    margin-top: 38px;         /* Отступ сверху, чтобы рамка не пересекала текст */
+    margin-top: 35px;         /* Отступ сверху, чтобы рамка не пересекала текст */
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -2547,72 +2662,487 @@ QGroupBox::title {
           <property name="checkable">
            <bool>false</bool>
           </property>
-          <widget class="MomentaryButton" name="alarmRstButton_2">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>141</width>
-             <height>49</height>
-            </rect>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <property name="spacing">
+            <number>59</number>
            </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="leftMargin">
+            <number>5</number>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-             <bold>true</bold>
-            </font>
+           <property name="topMargin">
+            <number>5</number>
            </property>
-           <property name="focusPolicy">
-            <enum>Qt::FocusPolicy::NoFocus</enum>
+           <property name="rightMargin">
+            <number>5</number>
            </property>
-           <property name="text">
-            <string>Фиксировать</string>
+           <property name="bottomMargin">
+            <number>5</number>
            </property>
-           <property name="writeAddress" stdset="0">
-            <string>D0.13</string>
-           </property>
-          </widget>
+           <item>
+            <widget class="MomentaryButton" name="alarmRstButton_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>141</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="text">
+              <string>Фиксировать</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D0.13</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="ToggleButton" name="cutRunToggle_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="stateTexts" stdset="0">
+              <stringlist/>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D10.4</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="ToggleButton" name="calibrationRunToggle_4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>141</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="stateTexts" stdset="0">
+              <stringlist>
+               <string>Перейти</string>
+               <string>Перейти</string>
+              </stringlist>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D0.10</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D0.10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
         <widget class="QWidget" name="pageJournal">
-         <layout class="QVBoxLayout" name="verticalLayout_journal">
-          <property name="spacing">
-           <number>16</number>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>10</y>
+            <width>661</width>
+            <height>326</height>
+           </rect>
           </property>
-          <property name="leftMargin">
-           <number>24</number>
-          </property>
-          <property name="topMargin">
-           <number>24</number>
-          </property>
-          <property name="rightMargin">
-           <number>24</number>
-          </property>
-          <property name="bottomMargin">
-           <number>24</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="labelJournalPlaceholder">
-            <property name="font">
-             <font>
-              <pointsize>18</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Настройки — в разработке</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelJournalPlaceholder_2">
+             <property name="font">
+              <font>
+               <pointsize>18</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Скорость калибровки, мм/мин</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="NumericDisplay" name="segmensOfNumberDisplay_6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D1116</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D1116</string>
+             </property>
+             <property name="format" stdset="0">
+              <string>Float</string>
+             </property>
+             <property name="fractional" stdset="0">
+              <UInt>0</UInt>
+             </property>
+             <property name="minimum" stdset="0">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum" stdset="0">
+              <double>1000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelJournalPlaceholder">
+             <property name="font">
+              <font>
+               <pointsize>18</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Скорость холостого перемещения, мм/мин</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="NumericDisplay" name="segmensOfNumberDisplay_7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D1122</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D1122</string>
+             </property>
+             <property name="format" stdset="0">
+              <string>Float</string>
+             </property>
+             <property name="fractional" stdset="0">
+              <UInt>0</UInt>
+             </property>
+             <property name="minimum" stdset="0">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum" stdset="0">
+              <double>1000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelJournalPlaceholder_3">
+             <property name="font">
+              <font>
+               <pointsize>18</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Скорость заглубления, мм/мин</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="NumericDisplay" name="segmensOfNumberDisplay_8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D1118</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D1118</string>
+             </property>
+             <property name="format" stdset="0">
+              <string>Float</string>
+             </property>
+             <property name="fractional" stdset="0">
+              <UInt>0</UInt>
+             </property>
+             <property name="minimum" stdset="0">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum" stdset="0">
+              <double>1000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelJournalPlaceholder_4">
+             <property name="font">
+              <font>
+               <pointsize>18</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Скорость подачи, мм/мин</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="NumericDisplay" name="segmensOfNumberDisplay_9">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D1120</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D1120</string>
+             </property>
+             <property name="format" stdset="0">
+              <string>Float</string>
+             </property>
+             <property name="fractional" stdset="0">
+              <UInt>0</UInt>
+             </property>
+             <property name="minimum" stdset="0">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum" stdset="0">
+              <double>1000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="labelJournalPlaceholder_5">
+             <property name="font">
+              <font>
+               <pointsize>18</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Скорость смены канавки, град/мин</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="NumericDisplay" name="segmensOfNumberDisplay_10">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::FocusPolicy::NoFocus</enum>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="readAddress" stdset="0">
+              <string>D1124</string>
+             </property>
+             <property name="writeAddress" stdset="0">
+              <string>D1124</string>
+             </property>
+             <property name="format" stdset="0">
+              <string>Float</string>
+             </property>
+             <property name="fractional" stdset="0">
+              <UInt>0</UInt>
+             </property>
+             <property name="minimum" stdset="0">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum" stdset="0">
+              <double>180.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
         <widget class="QWidget" name="pageService">
          <layout class="QVBoxLayout" name="verticalLayout_service">

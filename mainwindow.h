@@ -26,6 +26,8 @@ private slots:
 
     void on_actionClose_triggered();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     ModbusModel *model = nullptr;

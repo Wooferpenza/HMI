@@ -8,12 +8,8 @@ MomentaryButton::MomentaryButton(QWidget *parent)
     m_writeVariable->setMinimum(0);
     m_writeVariable->setMaximum(1);
     connect(this, &MomentaryButton::writeAddressChanged, m_writeVariable, &Variable::setAddressStr);
-    connect(this, &QPushButton::pressed, this, [this]() {
-        m_writeVariable->setValue(true);
-    });
-    connect(this, &QPushButton::released, this, [this]() {
-        m_writeVariable->setValue(false);
-    });
+    connect(this, &QPushButton::pressed, this, [this]() { m_writeVariable->setValue(true);});
+    connect(this, &QPushButton::released, this, [this]() { m_writeVariable->setValue(false);});
 }
 
 Variable *MomentaryButton::writeVariable() const
