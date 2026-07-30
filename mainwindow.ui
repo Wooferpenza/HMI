@@ -472,6 +472,9 @@ QGroupBox::title {
                <property name="writeAddress" stdset="0">
                 <string>D45.0</string>
                </property>
+               <property name="readAddress" stdset="0">
+                <string>D45.0</string>
+               </property>
               </widget>
              </item>
              <item row="3" column="0">
@@ -556,6 +559,9 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
+                <string>D24.0</string>
+               </property>
+               <property name="readAddress" stdset="0">
                 <string>D24.0</string>
                </property>
               </widget>
@@ -728,6 +734,9 @@ QGroupBox::title {
                 <string>&gt;0&lt;</string>
                </property>
                <property name="writeAddress" stdset="0">
+                <string>D66.0</string>
+               </property>
+               <property name="readAddress" stdset="0">
                 <string>D66.0</string>
                </property>
               </widget>
@@ -1119,6 +1128,9 @@ QGroupBox::title {
                <property name="writeAddress" stdset="0">
                 <string>D0.1</string>
                </property>
+               <property name="readAddress" stdset="0">
+                <string>D0.1</string>
+               </property>
               </widget>
              </item>
              <item>
@@ -1167,6 +1179,9 @@ QGroupBox::title {
                 <string>Пуск</string>
                </property>
                <property name="writeAddress" stdset="0">
+                <string>D0.0</string>
+               </property>
+               <property name="readAddress" stdset="0">
                 <string>D0.0</string>
                </property>
               </widget>
@@ -1349,6 +1364,9 @@ QGroupBox::title {
                <property name="writeAddress" stdset="0">
                 <string>D0.2</string>
                </property>
+               <property name="readAddress" stdset="0">
+                <string>D0.2</string>
+               </property>
               </widget>
              </item>
              <item>
@@ -1372,6 +1390,9 @@ QGroupBox::title {
                 <string>Вверх</string>
                </property>
                <property name="writeAddress" stdset="0">
+                <string>D0.3</string>
+               </property>
+               <property name="readAddress" stdset="0">
                 <string>D0.3</string>
                </property>
               </widget>
@@ -1490,6 +1511,9 @@ QGroupBox::title {
               <string>Сброс</string>
              </property>
              <property name="writeAddress" stdset="0">
+              <string>D0.4</string>
+             </property>
+             <property name="readAddress" stdset="0">
               <string>D0.4</string>
              </property>
             </widget>
@@ -1796,6 +1820,9 @@ QGroupBox::title {
              <property name="writeAddress" stdset="0">
               <string>D0.7</string>
              </property>
+             <property name="readAddress" stdset="0">
+              <string>D0.7</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="2">
@@ -1886,6 +1913,9 @@ QGroupBox::title {
               <string>&gt;</string>
              </property>
              <property name="writeAddress" stdset="0">
+              <string>D0.6</string>
+             </property>
+             <property name="readAddress" stdset="0">
               <string>D0.6</string>
              </property>
             </widget>
@@ -2237,6 +2267,9 @@ QGroupBox::title {
              <property name="writeAddress" stdset="0">
               <string>D0.9</string>
              </property>
+             <property name="readAddress" stdset="0">
+              <string>D0.9</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="2" colspan="2">
@@ -2327,6 +2360,9 @@ QGroupBox::title {
               <string>&gt;</string>
              </property>
              <property name="writeAddress" stdset="0">
+              <string>D0.8</string>
+             </property>
+             <property name="readAddress" stdset="0">
               <string>D0.8</string>
              </property>
             </widget>
@@ -2707,6 +2743,9 @@ QGroupBox::title {
              <property name="writeAddress" stdset="0">
               <string>D0.13</string>
              </property>
+             <property name="readAddress" stdset="0">
+              <string>D0.13</string>
+             </property>
             </widget>
            </item>
            <item>
@@ -2782,8 +2821,8 @@ QGroupBox::title {
          <widget class="MomentaryButton" name="clumpUpButton_2">
           <property name="geometry">
            <rect>
-            <x>785</x>
-            <y>20</y>
+            <x>775</x>
+            <y>30</y>
             <width>136</width>
             <height>64</height>
            </rect>
@@ -2807,6 +2846,9 @@ QGroupBox::title {
            <string>Вверх</string>
           </property>
           <property name="writeAddress" stdset="0">
+           <string>D0.3</string>
+          </property>
+          <property name="readAddress" stdset="0">
            <string>D0.3</string>
           </property>
          </widget>
@@ -3221,7 +3263,7 @@ QGroupBox::title {
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">

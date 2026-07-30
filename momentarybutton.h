@@ -17,7 +17,8 @@ public:
     Variable *readVariable() const;
 
 signals:
-
+private slots:
+      void onModbusValueChanged(const QVariant &val);
 private:
     Variable *m_writeVariable = nullptr;
     Variable *m_readVariable = nullptr;
