@@ -11,9 +11,9 @@ class ToggleButton : public QPushButton, public VariableProperty<ToggleButton>
 {
     Q_OBJECT
     Q_PROPERTY(Variable *readVariable READ readVariable FINAL)
-    Q_PROPERTY(Variable *writeVariable READ writeVariable FINAL)
+    Q_PROPERTY(Variable *writeReadVariable READ writeReadVariable FINAL)
     IMPLEMENT_SHARED_PROPERTY(QString, readAddress);
-    IMPLEMENT_SHARED_PROPERTY(QString, writeAddress);
+    IMPLEMENT_SHARED_PROPERTY(QString, writeReadAddress);
     Q_PROPERTY(QStringList stateTexts READ stateTexts WRITE setStateTexts NOTIFY stateTextsChanged FINAL)
     Q_PROPERTY(QString stateTextFallback READ stateTextFallback WRITE setStateTextFallback NOTIFY stateTextFallbackChanged FINAL)
 
@@ -26,11 +26,8 @@ public:
     QString stateTextFallback() const;
     void setStateTextFallback(const QString &text);
 
-    Variable *variable() const;
-
     Variable *readVariable() const;
-
-    Variable *writeVariable() const;
+    Variable *writeReadVariable() const;
 
 signals:
     void stateTextsChanged();
@@ -47,8 +44,8 @@ private:
 
     QStringList m_stateTexts;
     QString m_stateTextFallback;
-      Variable *m_readVariable = nullptr;
-    Variable *m_writeVariable = nullptr;
+    Variable *m_readVariable = nullptr;
+    Variable *m_writeReadVariable = nullptr;
 };
 
 #endif // TOGGLEBUTTON_H

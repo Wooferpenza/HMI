@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QCloseEvent>
 
 class ModbusModel;
 class ModbusManager;
@@ -23,23 +24,20 @@ public:
 private slots:
     void showNumPad();
     void showModbusSettings();
-
     void on_actionClose_triggered();
-
     void on_pushButton_clicked();
 
 
 
-    void on_pushButton_2_clicked();
-
-    void on_pushButton_2_clicked(bool checked);
 
 private:
     Ui::MainWindow *ui;
     ModbusModel *model = nullptr;
     ModbusManager *manager = nullptr;
     void contextMenuEvent(QContextMenuEvent *event) override;
-
+protected:
+    // Переопределяем стандартное событие закрытия окна
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // MAINWINDOW_H

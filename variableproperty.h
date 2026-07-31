@@ -67,11 +67,20 @@ public:
             notify(); // Просто вызываем переданную лямбду
         }
     }
+    QString writeReadAddress() const { return m_writeReadAddress; }
+    template <typename NotifyFunc>
+    void set_writeReadAddress(QString form, NotifyFunc notify) {
+        if (m_writeReadAddress != form) {
+            m_writeReadAddress = form;
+            notify(); // Просто вызываем переданную лямбду
+        }
+    }
 
 private:
     QString m_format;
     QString m_readAddress;
     QString m_writeAddress;
+    QString m_writeReadAddress;
     uint16_t m_fractional;
     float m_minimum;
     float m_maximum;

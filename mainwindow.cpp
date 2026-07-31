@@ -6,9 +6,11 @@
 #include "numericdisplay.h"
 #include "numpaddialog.h"
 #include "ui_mainwindow.h"
+#include "exitdialog.h"
 #include <QButtonGroup>
 #include <QSettings>
 #include <QProcess>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -45,24 +47,35 @@ MainWindow::MainWindow(QWidget *parent)
     ModbusSettings modbusCfg = ModbusSettings::load(s);
     model = new ModbusModel(this);
 
-    const auto displays1 = findChildren<QWidget*>();
-    for (QWidget *display : displays1) {
-        if (!display)
-            continue;
-        if (display->property("readVariable").isValid())
+    const auto myWidgets = findChildren<QWidget*>();
+    for (QWidget *widget : myWidgets) {
+        if (!widget) continue;
+        if (widget->property("readVariable").isValid())
         {
-            Variable *dsp=display->property("readVariable").value<Variable *>();
-            auto var = model->addVar(dsp->address(), dsp->rawValueSize());
-            connect(var, &ModbusVar::valueChanged, dsp,&Variable::setRawData);
+            Variable *pVariable=widget->property("readVariable").value<Variable *>();
+            auto var = model->addVar(pVariable->address(), pVariable->rawValueSize());
+            connect(var, &ModbusVar::valueChanged, pVariable,&Variable::setRawData);
         }
-        if (display->property("writeVariable").isValid())
+
+        if (widget->property("writeVariable").isValid())
         {
-            Variable *dsp=display->property("writeVariable").value<Variable *>();
-            connect(dsp, &Variable::rawValueChanged,this,[this, dsp](const QVector<uint16_t> &val) {
-                if (!val.isEmpty())
-                    emit model->requestWrite(dsp->address(),val) ;
+            Variable *pVariable=widget->property("writeVariable").value<Variable *>();
+            connect(pVariable, &Variable::rawValueChanged,this,[this, pVariable](const QVector<uint16_t> &val) {
+                if (!val.isEmpty()) emit model->requestWrite(pVariable->address(),val) ;
             });
         }
+
+        if (widget->property("writeReadVariable").isValid())
+        {
+            Variable *pVariable=widget->property("writeReadVariable").value<Variable *>();
+            connect(pVariable, &Variable::rawValueChanged,this,[this, pVariable](const QVector<uint16_t> &val) {
+                if (!val.isEmpty()) emit model->requestWrite(pVariable->address(),val) ;
+            });
+            auto var = model->addVar(pVariable->address(), pVariable->rawValueSize());
+            connect(var, &ModbusVar::valueChanged, pVariable,&Variable::setRawData);
+        }
+
+
     }
     manager = new ModbusManager(model, this);
     connect(manager, &ModbusManager::connectionStateChanged, this, [this](const QString &stateText) {
@@ -111,8 +124,6 @@ void MainWindow::showModbusSettings()
     manager->applySettings(newSettings);
 }
 
-
-
 void MainWindow::on_actionClose_triggered()
 {
     MainWindow::close();
@@ -123,7 +134,9 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event) {
 
 void MainWindow::on_pushButton_clicked()
 {
-     MainWindow::close();
+    //exitDialog dlg(this);
+   // dlg.exec();
+    MainWindow::close();
     // 2. Запускаем системную команду на выключение
 #if defined(Q_OS_WIN)
 //    QProcess::startDetached("shutdown -s -t 0");
@@ -131,18 +144,40 @@ void MainWindow::on_pushButton_clicked()
     QProcess::startDetached("shutdown -P now");
 #endif
 }
-
-
-
-
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::closeEvent(QCloseEvent *event)
 {
+    // Создаем диалоговое окно
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Выход из программы");
+    msgBox.setText("Выберите действие при выходе:");
 
+    // Добавляем кастомные кнопки
+    QPushButton *closeBtn = msgBox.addButton("Просто закрыть", QMessageBox::AcceptRole);
+    QPushButton *shutdownBtn = msgBox.addButton("Закрыть и выключить ПК", QMessageBox::ActionRole);
+    QPushButton *cancelBtn = msgBox.addButton("Отмена", QMessageBox::RejectRole);
+
+    msgBox.exec();
+
+    // Проверяем, какую кнопку нажал пользователь
+    if (msgBox.clickedButton() == cancelBtn) {
+        // Игнорируем закрытие, программа продолжает работать
+        event->ignore();
+    }
+    else if (msgBox.clickedButton() == shutdownBtn) {
+        // Разрешаем программе штатно закрыться
+        event->accept();
+
+// Выполняем кроссплатформенный запуск команды выключения
+#if defined(Q_OS_WIN)
+        QProcess::startDetached("shutdown", QStringList() << "/s" << "/t" << "0");
+#elif defined(Q_OS_LINUX)
+        QProcess::startDetached("shutdown", QStringList() << "-h" << "now");
+#elif defined(Q_OS_MAC)
+        QProcess::startDetached("osascript", QStringList() << "-e" << "tell app \"System Events\" to shut down");
+#endif
+    }
+    else if (msgBox.clickedButton() == closeBtn) {
+        // Просто закрываем программу
+        event->accept();
+    }
 }
-
-
-void MainWindow::on_pushButton_2_clicked(bool checked)
-{
-
-}
-

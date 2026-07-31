@@ -249,3 +249,8 @@ void Variable::setAddressStr(const QString &newAddressStr)
     if (adrlist.size()>0) m_address = adrlist.at(0).toInt();
     if (adrlist.size()>1) m_addressBit = adrlist.at(1).toInt();
 }
+
+QVariant Variable::value()
+{
+   return m_value;
+}

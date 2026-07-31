@@ -1147,6 +1147,12 @@ QGroupBox::title {
                <property name="autoFillBackground">
                 <bool>false</bool>
                </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton:checked {
+    background-color: #28A745; /* Зеленый после того, как на неё кликнули */
+    color: white;
+}</string>
+               </property>
                <property name="checked">
                 <bool>false</bool>
                </property>
@@ -1154,6 +1160,9 @@ QGroupBox::title {
                 <stringlist/>
                </property>
                <property name="readAddress" stdset="0">
+                <string>D10.0</string>
+               </property>
+               <property name="writeReadAddress" stdset="0">
                 <string>D10.0</string>
                </property>
               </widget>
@@ -1488,6 +1497,9 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D10.1</string>
              </property>
+             <property name="writeReadAddress" stdset="0">
+              <string>D10.1</string>
+             </property>
             </widget>
            </item>
            <item>
@@ -1607,7 +1619,7 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D10.2</string>
              </property>
-             <property name="writeAddress" stdset="0">
+             <property name="writeReadAddress" stdset="0">
               <string>D10.2</string>
              </property>
             </widget>
@@ -1638,6 +1650,9 @@ QGroupBox::title {
               <stringlist/>
              </property>
              <property name="readAddress" stdset="0">
+              <string>D10.3</string>
+             </property>
+             <property name="writeReadAddress" stdset="0">
               <string>D10.3</string>
              </property>
             </widget>
@@ -2050,7 +2065,7 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D0.14</string>
              </property>
-             <property name="writeAddress" stdset="0">
+             <property name="writeReadAddress" stdset="0">
               <string>D0.14</string>
              </property>
             </widget>
@@ -2491,7 +2506,7 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D0.11</string>
              </property>
-             <property name="writeAddress" stdset="0">
+             <property name="writeReadAddress" stdset="0">
               <string>D0.11</string>
              </property>
             </widget>
@@ -2528,7 +2543,7 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D0.12</string>
              </property>
-             <property name="writeAddress" stdset="0">
+             <property name="writeReadAddress" stdset="0">
               <string>D0.12</string>
              </property>
             </widget>
@@ -2771,6 +2786,9 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D10.4</string>
              </property>
+             <property name="writeReadAddress" stdset="0">
+              <string>D10.4</string>
+             </property>
             </widget>
            </item>
            <item>
@@ -2811,46 +2829,12 @@ QGroupBox::title {
              <property name="readAddress" stdset="0">
               <string>D0.10</string>
              </property>
-             <property name="writeAddress" stdset="0">
+             <property name="writeReadAddress" stdset="0">
               <string>D0.10</string>
              </property>
             </widget>
            </item>
           </layout>
-         </widget>
-         <widget class="MomentaryButton" name="clumpUpButton_2">
-          <property name="geometry">
-           <rect>
-            <x>775</x>
-            <y>30</y>
-            <width>136</width>
-            <height>64</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>18</pointsize>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::FocusPolicy::NoFocus</enum>
-          </property>
-          <property name="text">
-           <string>Вверх</string>
-          </property>
-          <property name="writeAddress" stdset="0">
-           <string>D0.3</string>
-          </property>
-          <property name="readAddress" stdset="0">
-           <string>D0.3</string>
-          </property>
          </widget>
         </widget>
         <widget class="QWidget" name="pageJournal">
@@ -3263,7 +3247,7 @@ QGroupBox::title {
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">

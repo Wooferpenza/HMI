@@ -2,18 +2,18 @@
 
 ToggleButton::ToggleButton(QWidget *parent)
     : QPushButton(parent)
-    , m_readVariable(new Variable(this)), m_writeVariable(new Variable(this))
+    , m_readVariable(new Variable(this)), m_writeReadVariable(new Variable(this))
 {
     setCheckable(true);
     connect(this, &ToggleButton::readAddressChanged, m_readVariable, &Variable::setAddressStr);
-    connect(this, &ToggleButton::writeAddressChanged, m_writeVariable, &Variable::setAddressStr);
+    connect(this, &ToggleButton::writeReadAddressChanged, m_writeReadVariable, &Variable::setAddressStr);
 
     m_readVariable->setType(Variable::DataFormat::Bit);
     m_readVariable->setMinimum(0);
     m_readVariable->setMaximum(1);
-    m_writeVariable->setType(Variable::DataFormat::Bit);
-    m_writeVariable->setMinimum(0);
-    m_writeVariable->setMaximum(1);
+    m_writeReadVariable->setType(Variable::DataFormat::Bit);
+    m_writeReadVariable->setMinimum(0);
+    m_writeReadVariable->setMaximum(1);
 
     connect(m_readVariable, &Variable::valueChanged, this, &ToggleButton::onModbusValueChanged);
     connect(this, &QPushButton::clicked, this, &ToggleButton::onClicked);
@@ -53,13 +53,12 @@ void ToggleButton::setStateTextFallback(const QString &text)
 void ToggleButton::onModbusValueChanged(const QVariant &val)
 {
     const bool state = val.toBool();
-    if (isChecked() != state)
-        setChecked(state);
+    setChecked(state);
 }
 
 void ToggleButton::onClicked()
 {
-    m_writeVariable->setValue(isChecked());
+    m_writeReadVariable->setValue(!m_writeReadVariable->value().toBool());
 }
 
 void ToggleButton::refreshStateText()
@@ -76,7 +75,7 @@ void ToggleButton::refreshStateText()
 
 void ToggleButton::mousePressEvent(QMouseEvent *event)
 {
-  // event->ignore();
+    event->ignore();
     QPushButton::mousePressEvent(event);
 }
 
@@ -93,7 +92,7 @@ Variable *ToggleButton::readVariable() const
     return m_readVariable;
 }
 
-Variable *ToggleButton::writeVariable() const
+Variable *ToggleButton::writeReadVariable() const
 {
-    return m_writeVariable;
+    return m_writeReadVariable;
 }

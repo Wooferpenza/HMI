@@ -31,6 +31,6 @@ Variable *MomentaryButton::readVariable() const
 
 void MomentaryButton::onModbusValueChanged(const QVariant &val)
 {
-      const bool state = val.toBool();
+    const bool state = val.toBool();
     setChecked(state);
 }

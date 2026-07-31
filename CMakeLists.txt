@@ -46,6 +46,7 @@ qt_add_executable(HMI
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     variableproperty.h
+    exitdialog.h exitdialog.cpp exitdialog.ui
 )
 
 target_include_directories(HMI PRIVATE

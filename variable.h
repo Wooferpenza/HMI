@@ -43,7 +43,7 @@ public:
     void setAddressBit(uint16_t newBitIndex);
 
     void setAddressStr(const QString &newAddressStr);
-
+    QVariant value();
 signals:
     void typeChanged();
     void nameChanged();
