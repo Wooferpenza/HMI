@@ -134,39 +134,21 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event) {
 
 void MainWindow::on_pushButton_clicked()
 {
-    //exitDialog dlg(this);
-   // dlg.exec();
     MainWindow::close();
-    // 2. Запускаем системную команду на выключение
-#if defined(Q_OS_WIN)
-//    QProcess::startDetached("shutdown -s -t 0");
-#elif defined(Q_OS_UNIX)
-    QProcess::startDetached("shutdown -P now");
-#endif
 }
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    // Создаем диалоговое окно
-    QMessageBox msgBox(this);
-    msgBox.setWindowTitle("Выход из программы");
-    msgBox.setText("Выберите действие при выходе:");
-
-    // Добавляем кастомные кнопки
-    QPushButton *closeBtn = msgBox.addButton("Просто закрыть", QMessageBox::AcceptRole);
-    QPushButton *shutdownBtn = msgBox.addButton("Закрыть и выключить ПК", QMessageBox::ActionRole);
-    QPushButton *cancelBtn = msgBox.addButton("Отмена", QMessageBox::RejectRole);
-
-    msgBox.exec();
+    exitDialog eDlg(this);
+    eDlg.exec();
 
     // Проверяем, какую кнопку нажал пользователь
-    if (msgBox.clickedButton() == cancelBtn) {
+    if (eDlg.clickedButtonName() == "CancelButton") {
         // Игнорируем закрытие, программа продолжает работать
         event->ignore();
     }
-    else if (msgBox.clickedButton() == shutdownBtn) {
+    else if (eDlg.clickedButtonName() == "ShutdownButton") {
         // Разрешаем программе штатно закрыться
         event->accept();
-
 // Выполняем кроссплатформенный запуск команды выключения
 #if defined(Q_OS_WIN)
         QProcess::startDetached("shutdown", QStringList() << "/s" << "/t" << "0");
@@ -176,8 +158,22 @@ void MainWindow::closeEvent(QCloseEvent *event)
         QProcess::startDetached("osascript", QStringList() << "-e" << "tell app \"System Events\" to shut down");
 #endif
     }
-    else if (msgBox.clickedButton() == closeBtn) {
+    else if (eDlg.clickedButtonName() == "RestartButton") {
+        // Разрешаем программе штатно закрыться
+        event->accept();
+// Выполняем кроссплатформенный запуск команды выключения
+#if defined(Q_OS_WIN)
+        QProcess::startDetached("shutdown", QStringList() << "/r" << "/t" << "0");
+#elif defined(Q_OS_LINUX)
+        QProcess::startDetached("shutdown", QStringList() << "-r" << "now");
+#elif defined(Q_OS_MAC)
+        QProcess::startDetached("osascript", QStringList() << "-e" << "tell app \"System Events\" to shut down");
+#endif
+    }
+    else if (eDlg.clickedButtonName() == "CloseButton") {
         // Просто закрываем программу
         event->accept();
     }
+
+
 }

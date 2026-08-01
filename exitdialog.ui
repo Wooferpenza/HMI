@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="CloseButton">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -26,7 +26,7 @@
     <string>Закрыть</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="ShutdownButton">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -39,7 +39,7 @@
     <string>Выключить</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="RestartButton">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -52,7 +52,7 @@
     <string>Перезагрузить</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="CancelButton">
    <property name="geometry">
     <rect>
      <x>150</x>

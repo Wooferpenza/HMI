@@ -6,6 +6,10 @@ exitDialog::exitDialog(QWidget *parent)
     , ui(new Ui::exitDialog)
 {
     ui->setupUi(this);
+    connect(ui->CloseButton, &QPushButton::clicked, this, &exitDialog::on_pushButton_clicked);
+    connect(ui->ShutdownButton, &QPushButton::clicked, this, &exitDialog::on_pushButton_clicked);
+    connect(ui->RestartButton, &QPushButton::clicked, this, &exitDialog::on_pushButton_clicked);
+    connect(ui->CancelButton, &QPushButton::clicked, this, &exitDialog::on_pushButton_clicked);
 }
 
 exitDialog::~exitDialog()
@@ -17,27 +21,9 @@ exitDialog::~exitDialog()
 
 void exitDialog::on_pushButton_clicked()
 {
+    QPushButton *button = qobject_cast<QPushButton *>(sender());
+    if (button) {
+        m_clickedButtonName=button->objectName();
+    }
     close();
-    parentWidget()->close();
-}
-
-
-void exitDialog::on_pushButton_2_clicked()
-{
-    close();
-    parentWidget()->close();
-
-}
-
-
-void exitDialog::on_pushButton_3_clicked()
-{
-    close();
-    parentWidget()->close();
-}
-
-void exitDialog::on_pushButton_4_clicked()
-{
-    close();
-
 }
