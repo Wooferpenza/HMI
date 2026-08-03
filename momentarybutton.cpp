@@ -37,51 +37,51 @@ void MomentaryButton::onModbusValueChanged(const QVariant &val)
     const bool state = val.toBool();
     setChecked(state);
 }
-bool MomentaryButton::event(QEvent *event) {
-    // 1. Перехватываем сенсорные события Windows
-    if (event->type() == QEvent::TouchBegin || event->type() == QEvent::TouchEnd) {
-        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+// bool MomentaryButton::event(QEvent *event) {
+//     // 1. Перехватываем сенсорные события Windows
+//     if (event->type() == QEvent::TouchBegin || event->type() == QEvent::TouchEnd) {
+//         QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
 
-        if (!touchEvent->points().isEmpty()) {
-            const QEventPoint &point = touchEvent->points().first();
-            QPointF localPos = point.position();
+//         if (!touchEvent->points().isEmpty()) {
+//             const QEventPoint &point = touchEvent->points().first();
+//             QPointF localPos = point.position();
 
-            if (event->type() == QEvent::TouchBegin) {
-                // Имитируем нажатие левой кнопки мыши мгновенно
-                QMouseEvent *mousePress = new QMouseEvent(
-                    QEvent::MouseButtonPress, localPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-                    );
-                QCoreApplication::postEvent(this, mousePress);
-            }
-            else if (event->type() == QEvent::TouchEnd) {
-                // Имитируем отпускание левой кнопки мыши мгновенно
-                QMouseEvent *mouseRelease = new QMouseEvent(
-                    QEvent::MouseButtonRelease, localPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-                    );
-                QCoreApplication::postEvent(this, mouseRelease);
-            }
-        }
+//             if (event->type() == QEvent::TouchBegin) {
+//                 // Имитируем нажатие левой кнопки мыши мгновенно
+//                 QMouseEvent *mousePress = new QMouseEvent(
+//                     QEvent::MouseButtonPress, localPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
+//                     );
+//                 QCoreApplication::postEvent(this, mousePress);
+//             }
+//             else if (event->type() == QEvent::TouchEnd) {
+//                 // Имитируем отпускание левой кнопки мыши мгновенно
+//                 QMouseEvent *mouseRelease = new QMouseEvent(
+//                     QEvent::MouseButtonRelease, localPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
+//                     );
+//                 QCoreApplication::postEvent(this, mouseRelease);
+//             }
+//         }
 
-        // Говорим Windows 10, что тач обработан, и оригинальное касание нужно погасить
-        event->accept();
-        return true;
-    }
-    // 2. Блокируем "искусственные" клики мыши, которые Windows 10 пытается создать сама из тача
-    if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+//         // Говорим Windows 10, что тач обработан, и оригинальное касание нужно погасить
+//         event->accept();
+//         return true;
+//     }
+//     // 2. Блокируем "искусственные" клики мыши, которые Windows 10 пытается создать сама из тача
+//     if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
+//         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
 
-        // Проверяем источник события. Если это синтетический клик от Windows-тача, игнорируем его
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        if (mouseEvent->pointingDevice()->type() == QInputDevice::DeviceType::TouchScreen) {
-#else
-            // Для Qt 5 используем старый синтаксис источника
-        if (mouseEvent->source() == Qt::MouseEventSynthesizedBySystem) {
-#endif
-            event->accept();
-            return true;
-        }
-    }
+//         // Проверяем источник события. Если это синтетический клик от Windows-тача, игнорируем его
+// #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+//         if (mouseEvent->pointingDevice()->type() == QInputDevice::DeviceType::TouchScreen) {
+// #else
+//             // Для Qt 5 используем старый синтаксис источника
+//         if (mouseEvent->source() == Qt::MouseEventSynthesizedBySystem) {
+// #endif
+//             event->accept();
+//             return true;
+//         }
+//     }
 
-    // Настоящая физическая мышь пойдет сюда и отработает штатно
-    return QPushButton::event(event);
-}
+//     // Настоящая физическая мышь пойдет сюда и отработает штатно
+//     return QPushButton::event(event);
+// }
