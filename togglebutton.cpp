@@ -75,8 +75,15 @@ void ToggleButton::refreshStateText()
 
 void ToggleButton::mousePressEvent(QMouseEvent *event)
 {
-    event->ignore();
-    QPushButton::mousePressEvent(event);
+    if (readOnly())
+    {
+        event->accept();
+        return;
+    }
+    else
+    {
+        QPushButton::mousePressEvent(event);
+    }
 }
 
 void ToggleButton::ensureStateTextListLength()
@@ -95,4 +102,18 @@ Variable *ToggleButton::readVariable() const
 Variable *ToggleButton::writeReadVariable() const
 {
     return m_writeReadVariable;
+}
+
+bool ToggleButton::readOnly() const
+{
+    return m_readOnly;
+}
+
+void ToggleButton::setReadOnly(bool newReadOnly)
+{
+    if (m_readOnly == newReadOnly)
+        return;
+    m_readOnly = newReadOnly;
+
+    emit readOnlyChanged();
 }

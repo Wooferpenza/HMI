@@ -2,6 +2,7 @@
 #define MOMENTARYBUTTON_H
 
 #include <QPushButton>
+#include <QEvent>
 #include "variable.h"
 #include "variableproperty.h"
 class MomentaryButton : public QPushButton, public VariableProperty <MomentaryButton>
@@ -22,6 +23,8 @@ private slots:
 private:
     Variable *m_writeVariable = nullptr;
     Variable *m_readVariable = nullptr;
+protected:
+    bool event(QEvent *event) override;
 };
 
 #endif // MOMENTARYBUTTON_H

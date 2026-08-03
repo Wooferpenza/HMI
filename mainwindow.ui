@@ -1135,6 +1135,9 @@ QGroupBox::title {
              </item>
              <item>
               <widget class="ToggleButton" name="cutRunToggle">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -1164,6 +1167,9 @@ QGroupBox::title {
                </property>
                <property name="writeReadAddress" stdset="0">
                 <string>D10.0</string>
+               </property>
+               <property name="readOnly" stdset="0">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1499,6 +1505,9 @@ QGroupBox::title {
              </property>
              <property name="writeReadAddress" stdset="0">
               <string>D10.1</string>
+             </property>
+             <property name="readOnly" stdset="0">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -2765,6 +2774,9 @@ QGroupBox::title {
            </item>
            <item>
             <widget class="ToggleButton" name="cutRunToggle_2">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -2788,6 +2800,9 @@ QGroupBox::title {
              </property>
              <property name="writeReadAddress" stdset="0">
               <string>D10.4</string>
+             </property>
+             <property name="readOnly" stdset="0">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -3247,7 +3262,7 @@ QGroupBox::title {
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">
