@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QCloseEvent>
-
+#include "alarm.h"
+#include "alarmdialog.h"
 class ModbusModel;
 class ModbusManager;
 
@@ -26,12 +27,14 @@ private slots:
     void showModbusSettings();
     void on_actionClose_triggered();
     void on_pushButton_clicked();
-
+    void on_alarmChanged(QStringList);
 
 
 
 private:
     Ui::MainWindow *ui;
+    Alarm alarm;
+    AlarmDialog *alarmDialog;
     ModbusModel *model = nullptr;
     ModbusManager *manager = nullptr;
     void contextMenuEvent(QContextMenuEvent *event) override;

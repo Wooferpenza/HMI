@@ -10,7 +10,13 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("HMI");
 
     MainWindow w;
-    //w.showFullScreen();
+
+
+#ifdef QT_DEBUG
     w.showNormal();
+#else
+    w.showFullScreen();
+#endif
+
     return a.exec();
 }

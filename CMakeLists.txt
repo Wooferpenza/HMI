@@ -47,6 +47,8 @@ qt_add_executable(HMI
     ${PROJECT_SOURCES}
     variableproperty.h
     exitdialog.h exitdialog.cpp exitdialog.ui
+    alarm.h alarm.cpp
+    alarmdialog.h alarmdialog.cpp alarmdialog.ui
 )
 
 target_include_directories(HMI PRIVATE

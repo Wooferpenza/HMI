@@ -11,19 +11,24 @@
 #include <QSettings>
 #include <QProcess>
 #include <QMessageBox>
+#include "QDebug"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    alarmDialog = new AlarmDialog(this);
+    alarm.set_readAddress("D15");
+    connect(&alarm,&Alarm::alarmChanged,this,&MainWindow::on_alarmChanged);
+    //connect(&alarm,&Alarm::alarmChanged,this,&MainWindow::on_alarmChanged);
     setAttribute(Qt::WA_AcceptTouchEvents, true);
 
     auto *navGroup = new QButtonGroup(this);
     navGroup->setExclusive(true);
     navGroup->addButton(ui->navButtonOverview, 0);
     navGroup->addButton(ui->navButtonJournal, 1);
-    navGroup->addButton(ui->navButtonService, 2);
+   // navGroup->addButton(ui->navButtonService, 2);
     connect(navGroup, &QButtonGroup::idClicked,
             ui->stackedWidgetPages, &QStackedWidget::setCurrentIndex);
     connect(ui->stackedWidgetPages, &QStackedWidget::currentChanged,
@@ -74,9 +79,10 @@ MainWindow::MainWindow(QWidget *parent)
             auto var = model->addVar(pVariable->address(), pVariable->rawValueSize());
             connect(var, &ModbusVar::valueChanged, pVariable,&Variable::setRawData);
         }
-
-
     }
+    auto var = model->addVar(alarm.readVariable()->address(), alarm.readVariable()->rawValueSize());
+    connect(var, &ModbusVar::valueChanged, alarm.readVariable(),&Variable::setRawData);
+
     manager = new ModbusManager(model, this);
     connect(manager, &ModbusManager::connectionStateChanged, this, [this](const QString &stateText) {
         ui->statusbar->showMessage(stateText, 0);
@@ -136,8 +142,31 @@ void MainWindow::on_pushButton_clicked()
 {
     MainWindow::close();
 }
+
+void MainWindow::on_alarmChanged(QStringList message)
+{
+    if (message.count()!=0)
+    {
+        QString string;
+    foreach (QString str, message)
+    {
+        string+=str;
+    }
+    qDebug() << string;
+    alarmDialog->on_alarmChanged(message);
+    alarmDialog->show();
+    }
+    else {
+        alarmDialog->on_alarmChanged(message);
+        alarmDialog->close();
+    }
+}
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+#ifdef QT_DEBUG
+    event->accept();
+    return;
+#endif
     exitDialog eDlg(this);
     eDlg.exec();
 

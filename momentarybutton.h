@@ -24,7 +24,7 @@ private:
     Variable *m_writeVariable = nullptr;
     Variable *m_readVariable = nullptr;
 protected:
- //   bool event(QEvent *event) override;
+    bool event(QEvent *event) override;
 };
 
 #endif // MOMENTARYBUTTON_H

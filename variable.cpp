@@ -144,6 +144,7 @@ void Variable::valueToRawValue()
 
 void Variable::setRawData(const QVector<uint16_t> &raw)
 {
+    if (m_rawValue == raw) return;
     m_rawValue = raw;
     QVariant decoded;
     switch (m_type)
